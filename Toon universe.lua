@@ -427,76 +427,77 @@ RunService.RenderStepped:Connect(function()
         end
     end
 end)
-local RunService = game:GetService("RunService")
-local Folder = workspace:WaitForChild("MonsterFolder")
 
-local Highlights = {}
-local Enabled = false
-local Connections = {}
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
 
-local function createHighlight(obj)
-    if Highlights[obj] then return end
-    if not obj:IsA("Model") and not obj:IsA("BasePart") then return end
+local MapStats = workspace:WaitForChild("MapStats")
+local Value = MapStats:WaitForChild("IsFloorCompleted")
 
-    local highlight = Instance.new("Highlight")
-    highlight.FillColor = Color3.fromRGB(255, 0, 0)
-    highlight.OutlineColor = Color3.fromRGB(255, 0, 0)
-    highlight.FillTransparency = 0.5
-    highlight.OutlineTransparency = 0
-    highlight.Adornee = obj
-    highlight.Parent = obj
+local ExitModel = workspace:WaitForChild("Map"):WaitForChild("SpecialFolder"):WaitForChild("ExitElevator")
 
-    Highlights[obj] = highlight
+local running = false
+local enabled = false
+local connection
+
+local function getCFrame()
+    if ExitModel.PrimaryPart then
+        return ExitModel.PrimaryPart.CFrame
+    else
+        local part = ExitModel:FindFirstChildWhichIsA("BasePart")
+        return part and part.CFrame or nil
+    end
 end
 
-local function removeAll()
-    for obj, h in pairs(Highlights) do
-        if h then h:Destroy() end
-        Highlights[obj] = nil
+local function teleportLoop()
+    if running then return end
+    running = true
+
+    while enabled and Value.Value do
+        local char = LocalPlayer.Character
+        local cf = getCFrame()
+
+        if char and char:FindFirstChild("HumanoidRootPart") and cf then
+            char.HumanoidRootPart.CFrame = cf
+        end
+
+        task.wait(0.1)
     end
+
+    running = false
 end
 
 local function start()
-    for _, v in ipairs(Folder:GetChildren()) do
-        createHighlight(v)
+    if connection then connection:Disconnect() end
+
+    connection = Value:GetPropertyChangedSignal("Value"):Connect(function()
+        if enabled and Value.Value then
+            teleportLoop()
+        end
+    end)
+
+    if Value.Value then
+        teleportLoop()
     end
-
-    Connections.Added = Folder.ChildAdded:Connect(createHighlight)
-
-    Connections.Removed = Folder.ChildRemoved:Connect(function(obj)
-        if Highlights[obj] then
-            Highlights[obj]:Destroy()
-            Highlights[obj] = nil
-        end
-    end)
-
-    Connections.Loop = RunService.RenderStepped:Connect(function()
-        for obj in pairs(Highlights) do
-            if not obj or not obj.Parent then
-                if Highlights[obj] then
-                    Highlights[obj]:Destroy()
-                    Highlights[obj] = nil
-                end
-            end
-        end
-    end)
 end
 
 local function stop()
-    for _, c in pairs(Connections) do
-        if c then c:Disconnect() end
+    enabled = false
+    running = false
+    if connection then
+        connection:Disconnect()
+        connection = nil
     end
-    table.clear(Connections)
-    removeAll()
 end
 
-local Toggle = TabESP:Toggle({
-    Title = "Monster Highlight",
-    Desc = "",
+local Toggle = TabTele:Toggle({
+    Title = "Auto Elevator",
+    Desc = "Teleport to exit when floor complete",
+    Icon = "power",
     Value = false,
-    Flag = "monster_highlight",
+    Flag = "auto_elevator",
     Callback = function(state)
-        Enabled = state
+        enabled = state
         if state then
             start()
         else
