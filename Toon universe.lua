@@ -44,7 +44,19 @@ local Window = WindUI:CreateWindow({
         ButtonsType = "Mac",
     },
 })
-
+Window:EditOpenButton({
+    Title = "Toon Universe",
+    Icon = "monitor",
+    CornerRadius = UDim.new(0,16),
+    StrokeThickness = 2,
+    Color = ColorSequence.new( -- gradient
+        Color3.fromHex("FF0F7B"), 
+        Color3.fromHex("F89B29")
+    ),
+    OnlyMobile = false,
+    Enabled = true,
+    Draggable = true,
+})
 Window:Tag({
     Title = "by Myllooo",
     Color = Color3.fromHex("#1c1c1c"),
@@ -427,24 +439,24 @@ RunService.RenderStepped:Connect(function()
         end
     end
 end)
-
+TabTele:Space()
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
 local MapStats = workspace:WaitForChild("MapStats")
 local Value = MapStats:WaitForChild("IsFloorCompleted")
 
-local ExitModel = workspace:WaitForChild("Map"):WaitForChild("SpecialFolder"):WaitForChild("ExitElevator")
+local Elevator = workspace:WaitForChild("Elevator")
 
 local running = false
 local enabled = false
 local connection
 
 local function getCFrame()
-    if ExitModel.PrimaryPart then
-        return ExitModel.PrimaryPart.CFrame
+    if Elevator.PrimaryPart then
+        return Elevator.PrimaryPart.CFrame
     else
-        local part = ExitModel:FindFirstChildWhichIsA("BasePart")
+        local part = Elevator:FindFirstChildWhichIsA("BasePart")
         return part and part.CFrame or nil
     end
 end
@@ -492,7 +504,7 @@ end
 
 local Toggle = TabTele:Toggle({
     Title = "Auto Elevator",
-    Desc = "Teleport to exit when floor complete",
+    Desc = "Teleport to elevator when floor complete",
     Icon = "power",
     Value = false,
     Flag = "auto_elevator",
