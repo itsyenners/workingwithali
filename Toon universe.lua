@@ -1,29 +1,69 @@
-local ok, Rayfield = pcall(function()
-    return loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
-end)
+local RunService = game:GetService("RunService")
 
-if not ok or not Rayfield then
-    print("Erro ao carregar Rayfield!")
-    return
+local cloneref = (cloneref or clonereference or function(instance) return instance end)
+local ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage"))
+
+local WindUI
+do
+    local ok, result = pcall(function()
+        return require("./src/Init")
+    end)
+    if ok then
+        WindUI = result
+    else
+        if cloneref(RunService):IsStudio() then
+            WindUI = require(cloneref(ReplicatedStorage:WaitForChild("WindUI"):WaitForChild("Init")))
+        else
+            WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua"))()
+        end
+    end
 end
 
-local Window = Rayfield:CreateWindow({
-    Name = "Toon Universe",
-    LoadingTitle = "Farm Script",
-    LoadingSubtitle = "by Myllooo",
-    Theme = "Default",
-    DisableRayfieldPrompts = true,
-    DisableBuildWarnings = true,
+-- */  Window  /* --
+local Window = WindUI:CreateWindow({
+    Title = "Toon Universe  |  Farm Script",
+    Folder = "ToonUniverseHub",
+    Icon = "zap",
+    NewElements = true,
+    HideSearchBar = false,
+    OpenButton = {
+        Title = "Toon Universe",
+        CornerRadius = UDim.new(1, 0),
+        StrokeThickness = 3,
+        Enabled = true,
+        Draggable = true,
+        OnlyMobile = false,
+        Scale = 0.5,
+        Color = ColorSequence.new(
+            Color3.fromHex("#00ff50"),
+            Color3.fromHex("#00cfff")
+        ),
+    },
+    Topbar = {
+        Height = 44,
+        ButtonsType = "Mac",
+    },
 })
 
-local TabESP = Window:CreateTab("ESP", "eye")
-local TabFarm = Window:CreateTab("Farm", "zap")
-local TabTele = Window:CreateTab("Teleport", "map-pin")
-local TabMisc = Window:CreateTab("Misc", "settings")
+Window:Tag({
+    Title = "by Myllooo",
+    Color = Color3.fromHex("#1c1c1c"),
+    Border = true,
+})
 
+-- */  Colors  /* --
+local Green  = Color3.fromHex("#10C550")
+local Yellow = Color3.fromHex("#ECA201")
+local Orange = Color3.fromHex("#FF7800")
+local Blue   = Color3.fromHex("#257AF7")
+local Red    = Color3.fromHex("#EF4F1D")
+local Purple = Color3.fromHex("#7775F2")
+local Grey   = Color3.fromHex("#83889E")
+
+-- */  Player refs  /* --
 local player = game.Players.LocalPlayer
-local char = player.Character or player.CharacterAdded:Wait()
-local root = char:FindFirstChild("HumanoidRootPart")
+local char   = player.Character or player.CharacterAdded:Wait()
+local root   = char:FindFirstChild("HumanoidRootPart")
 local speedValue = 16
 
 player.CharacterAdded:Connect(function(c)
@@ -33,85 +73,151 @@ player.CharacterAdded:Connect(function(c)
     hum.WalkSpeed = speedValue
 end)
 
-local function criarHighlight(adornee, fillColor, tag)
+-- */  ESP Helpers  /* --
+local function createHighlight(adornee, fillColor, tag)
     if adornee:FindFirstChild(tag) then return end
     local h = Instance.new("Highlight")
-    h.Name = tag
-    h.Adornee = adornee
-    h.FillColor = fillColor
-    h.OutlineColor = Color3.new(1,1,1)
-    h.FillTransparency = 0.5
+    h.Name               = tag
+    h.Adornee            = adornee
+    h.FillColor          = fillColor
+    h.OutlineColor       = Color3.new(1, 1, 1)
+    h.FillTransparency   = 0.5
     h.OutlineTransparency = 0
-    h.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-    h.Parent = adornee
+    h.DepthMode          = Enum.HighlightDepthMode.AlwaysOnTop
+    h.Parent             = adornee
 end
 
-local function limparTag(tag)
+local function clearTag(tag)
     for _, obj in ipairs(workspace:GetDescendants()) do
         if obj.Name == tag then obj:Destroy() end
     end
 end
 
-local espCaps, espItens, espMaq, espComp, espMons, espBig = false,false,false,false,false,false
+-- */  Sections  /* --
+local ESPSection  = Window:Section({ Title = "ESP" })
+local FarmSection = Window:Section({ Title = "Farm" })
+local TeleSection = Window:Section({ Title = "Teleport" })
+local MiscSection = Window:Section({ Title = "Misc" })
 
-TabESP:CreateToggle({ Name = "ESP Capsulas", CurrentValue = false, Flag = "ESPCaps",
-    Callback = function(val) espCaps = val if not val then limparTag("ESP_Caps") end end })
+-- ============================================================
+-- */  ESP Tab  /* --
+-- ============================================================
+local TabESP = ESPSection:Tab({
+    Title     = "ESP",
+    Icon      = "eye",
+    IconColor = Blue,
+    IconShape = "Square",
+    Border    = true,
+})
 
-TabESP:CreateToggle({ Name = "ESP Itens", CurrentValue = false, Flag = "ESPItens",
-    Callback = function(val) espItens = val if not val then limparTag("ESP_Itens") end end })
+local espCaps, espItens, espMaq, espComp, espMons, espBig = false, false, false, false, false, false
 
-TabESP:CreateToggle({ Name = "ESP Maquinas", CurrentValue = false, Flag = "ESPMaq",
-    Callback = function(val) espMaq = val if not val then limparTag("ESP_Maq") end end })
+TabESP:Toggle({
+    Title    = "ESP Capsules",
+    Value    = false,
+    Flag     = "ESPCaps",
+    Callback = function(val)
+        espCaps = val
+        if not val then clearTag("ESP_Caps") end
+    end,
+})
+TabESP:Space()
 
-TabESP:CreateToggle({ Name = "ESP Computadores", CurrentValue = false, Flag = "ESPComp",
-    Callback = function(val) espComp = val if not val then limparTag("ESP_Comp") end end })
+TabESP:Toggle({
+    Title    = "ESP Items",
+    Value    = false,
+    Flag     = "ESPItens",
+    Callback = function(val)
+        espItens = val
+        if not val then clearTag("ESP_Itens") end
+    end,
+})
+TabESP:Space()
 
-TabESP:CreateToggle({ Name = "ESP Monstros", CurrentValue = false, Flag = "ESPMons",
-    Callback = function(val) espMons = val if not val then limparTag("ESP_Mons") end end })
+TabESP:Toggle({
+    Title    = "ESP Machines",
+    Value    = false,
+    Flag     = "ESPMaq",
+    Callback = function(val)
+        espMaq = val
+        if not val then clearTag("ESP_Maq") end
+    end,
+})
+TabESP:Space()
 
-TabESP:CreateToggle({ Name = "ESP Big Machine", CurrentValue = false, Flag = "ESPBig",
-    Callback = function(val) espBig = val if not val then limparTag("ESP_Big") end end })
+TabESP:Toggle({
+    Title    = "ESP Computers",
+    Value    = false,
+    Flag     = "ESPComp",
+    Callback = function(val)
+        espComp = val
+        if not val then clearTag("ESP_Comp") end
+    end,
+})
+TabESP:Space()
 
-local monstersSemRoot = {"TSquid", "TDiscardd", "TNimbus"}
+TabESP:Toggle({
+    Title    = "ESP Monsters",
+    Value    = false,
+    Flag     = "ESPMons",
+    Callback = function(val)
+        espMons = val
+        if not val then clearTag("ESP_Mons") end
+    end,
+})
+TabESP:Space()
+
+TabESP:Toggle({
+    Title    = "ESP Big Machine",
+    Value    = false,
+    Flag     = "ESPBig",
+    Callback = function(val)
+        espBig = val
+        if not val then clearTag("ESP_Big") end
+    end,
+})
+
+-- ESP loop
+local monstersSemRoot = { "TSquid", "TDiscardd", "TNimbus" }
 
 task.spawn(function()
     while task.wait(3) do
         if espCaps then
             for _, model in ipairs(workspace.Capsules:GetChildren()) do
-                criarHighlight(model, Color3.fromRGB(0, 255, 80), "ESP_Caps")
+                createHighlight(model, Color3.fromRGB(0, 255, 80), "ESP_Caps")
             end
         end
         if espItens then
             for _, item in ipairs(workspace.Items:GetChildren()) do
-                criarHighlight(item, Color3.fromRGB(255, 220, 0), "ESP_Itens")
+                createHighlight(item, Color3.fromRGB(255, 220, 0), "ESP_Itens")
             end
         end
         if espMaq then
             for _, machine in ipairs(workspace.OilMachines:GetChildren()) do
-                criarHighlight(machine, Color3.fromRGB(255, 120, 0), "ESP_Maq")
+                createHighlight(machine, Color3.fromRGB(255, 120, 0), "ESP_Maq")
             end
         end
         if espComp then
             for _, comp in ipairs(workspace.Computers:GetChildren()) do
-                criarHighlight(comp, Color3.fromRGB(0, 180, 255), "ESP_Comp")
+                createHighlight(comp, Color3.fromRGB(0, 180, 255), "ESP_Comp")
             end
         end
         if espMons then
             for _, folder in ipairs(workspace.MonsterFolder:GetChildren()) do
-                local semRoot = false
-                for _, nome in ipairs(monstersSemRoot) do
-                    if folder.Name == nome then semRoot = true break end
+                local noRoot = false
+                for _, name in ipairs(monstersSemRoot) do
+                    if folder.Name == name then noRoot = true break end
                 end
-                if semRoot then
+                if noRoot then
                     for _, obj in ipairs(folder:GetChildren()) do
-                        criarHighlight(obj, Color3.fromRGB(255, 0, 0), "ESP_Mons")
+                        createHighlight(obj, Color3.fromRGB(255, 0, 0), "ESP_Mons")
                     end
                 elseif folder:FindFirstChild("RootPart") then
-                    criarHighlight(folder, Color3.fromRGB(255, 0, 0), "ESP_Mons")
+                    createHighlight(folder, Color3.fromRGB(255, 0, 0), "ESP_Mons")
                 else
                     for _, monster in ipairs(folder:GetChildren()) do
                         if monster:FindFirstChild("RootPart") then
-                            criarHighlight(monster, Color3.fromRGB(255, 0, 0), "ESP_Mons")
+                            createHighlight(monster, Color3.fromRGB(255, 0, 0), "ESP_Mons")
                         end
                     end
                 end
@@ -122,22 +228,35 @@ task.spawn(function()
                 return workspace.Map.SpecialFolder.BigMachine.Computer
             end)
             if ok2 and big then
-                criarHighlight(big, Color3.fromRGB(255, 0, 255), "ESP_Big")
+                createHighlight(big, Color3.fromRGB(255, 0, 255), "ESP_Big")
             end
         end
     end
 end)
 
-local farmCapsulasAtivo = false
-TabFarm:CreateToggle({
-    Name = "Farm Capsulas", CurrentValue = false, Flag = "FarmCaps",
+-- ============================================================
+-- */  Farm Tab  /* --
+-- ============================================================
+local TabFarm = FarmSection:Tab({
+    Title     = "Farm",
+    Icon      = "zap",
+    IconColor = Yellow,
+    IconShape = "Square",
+    Border    = true,
+})
+
+local farmCapsulesActive = false
+TabFarm:Toggle({
+    Title    = "Farm Capsules",
+    Value    = false,
+    Flag     = "FarmCaps",
     Callback = function(val)
-        farmCapsulasAtivo = val
+        farmCapsulesActive = val
         task.spawn(function()
-            while farmCapsulasAtivo do
+            while farmCapsulesActive do
                 for _, model in ipairs(workspace.Capsules:GetChildren()) do
-                    if not farmCapsulasAtivo then break end
-                    local r = model:FindFirstChild("Root")
+                    if not farmCapsulesActive then break end
+                    local r      = model:FindFirstChild("Root")
                     local prompt = model:FindFirstChildWhichIsA("ProximityPrompt", true)
                     if r and prompt and root then
                         root.CFrame = r.CFrame + Vector3.new(0, 3, 0)
@@ -152,19 +271,23 @@ TabFarm:CreateToggle({
     end,
 })
 
-local farmItensAtivo = false
-TabFarm:CreateToggle({
-    Name = "Farm Itens", CurrentValue = false, Flag = "FarmItens",
+TabFarm:Space()
+
+local farmItemsActive = false
+TabFarm:Toggle({
+    Title    = "Farm Items",
+    Value    = false,
+    Flag     = "FarmItens",
     Callback = function(val)
-        farmItensAtivo = val
+        farmItemsActive = val
         task.spawn(function()
-            while farmItensAtivo do
+            while farmItemsActive do
                 for _, item in ipairs(workspace.Items:GetChildren()) do
-                    if not farmItensAtivo then break end
-                    local parte = item:FindFirstChild("Cube") or item:FindFirstChild("Cubee.003")
+                    if not farmItemsActive then break end
+                    local part   = item:FindFirstChild("Cube") or item:FindFirstChild("Cubee.003")
                     local prompt = item:FindFirstChild("ProximityPrompt")
-                    if parte and prompt and root then
-                        root.CFrame = parte.CFrame + Vector3.new(0, 3, 0)
+                    if part and prompt and root then
+                        root.CFrame = part.CFrame + Vector3.new(0, 3, 0)
                         task.wait(0.3)
                         fireproximityprompt(prompt)
                         task.wait(0.3)
@@ -176,18 +299,41 @@ TabFarm:CreateToggle({
     end,
 })
 
-TabFarm:CreateButton({
-    Name = "Limpar Todo ESP",
+TabFarm:Space()
+
+TabFarm:Button({
+    Title    = "Clear All ESP",
+    Color    = Red,
+    Icon     = "trash",
+    Justify  = "Center",
     Callback = function()
-        for _, tag in ipairs({"ESP_Caps","ESP_Itens","ESP_Maq","ESP_Comp","ESP_Mons","ESP_Big"}) do
-            limparTag(tag)
+        for _, tag in ipairs({ "ESP_Caps", "ESP_Itens", "ESP_Maq", "ESP_Comp", "ESP_Mons", "ESP_Big" }) do
+            clearTag(tag)
         end
-        Rayfield:Notify({ Title = "ESP", Content = "ESP removido!", Duration = 3 })
+        WindUI:Notify({
+            Title   = "ESP",
+            Content = "All ESP highlights removed!",
+            Icon    = "check",
+            Duration = 3,
+        })
     end,
 })
 
-TabTele:CreateButton({
-    Name = "Teleportar todas Maquinas",
+-- ============================================================
+-- */  Teleport Tab  /* --
+-- ============================================================
+local TabTele = TeleSection:Tab({
+    Title     = "Teleport",
+    Icon      = "map-pin",
+    IconColor = Green,
+    IconShape = "Square",
+    Border    = true,
+})
+
+TabTele:Button({
+    Title    = "Teleport to All Machines",
+    Icon     = "cpu",
+    Justify  = "Center",
     Callback = function()
         for _, machine in ipairs(workspace.OilMachines:GetChildren()) do
             local prompt = machine:FindFirstChild("PromptPart")
@@ -199,8 +345,12 @@ TabTele:CreateButton({
     end,
 })
 
-TabTele:CreateButton({
-    Name = "Teleportar todos Computadores",
+TabTele:Space()
+
+TabTele:Button({
+    Title    = "Teleport to All Computers",
+    Icon     = "monitor",
+    Justify  = "Center",
     Callback = function()
         for _, comp in ipairs(workspace.Computers:GetChildren()) do
             local prompt = comp:FindFirstChild("PromptPart")
@@ -212,8 +362,13 @@ TabTele:CreateButton({
     end,
 })
 
-TabTele:CreateButton({
-    Name = "Teleportar Big Machine",
+TabTele:Space()
+
+TabTele:Button({
+    Title    = "Teleport to Big Machine",
+    Icon     = "building",
+    Justify  = "Center",
+    Color    = Purple,
     Callback = function()
         local ok2, prompt = pcall(function()
             return workspace.Map.SpecialFolder.BigMachine.Computer.PromptPart
@@ -224,13 +379,26 @@ TabTele:CreateButton({
     end,
 })
 
-TabMisc:CreateSlider({
-    Name = "Velocidade",
-    Range = {16, 150},
-    Increment = 1,
-    Suffix = " WalkSpeed",
-    CurrentValue = 16,
-    Flag = "Speed",
+-- ============================================================
+-- */  Misc Tab  /* --
+-- ============================================================
+local TabMisc = MiscSection:Tab({
+    Title     = "Misc",
+    Icon      = "settings",
+    IconColor = Grey,
+    IconShape = "Square",
+    Border    = true,
+})
+
+TabMisc:Slider({
+    Title    = "Walk Speed",
+    Flag     = "Speed",
+    Step     = 1,
+    Value    = {
+        Min     = 16,
+        Max     = 150,
+        Default = 16,
+    },
     Callback = function(val)
         speedValue = val
         local hum = char:FindFirstChildOfClass("Humanoid")
@@ -238,22 +406,26 @@ TabMisc:CreateSlider({
     end,
 })
 
-local noclipAtivo = false
-TabMisc:CreateToggle({
-    Name = "Noclip", CurrentValue = false, Flag = "Noclip",
+TabMisc:Space()
+
+local noclipActive = false
+TabMisc:Toggle({
+    Title    = "Noclip",
+    Value    = false,
+    Flag     = "Noclip",
     Callback = function(val)
-        noclipAtivo = val
+        noclipActive = val
     end,
 })
 
-game:GetService("RunService").RenderStepped:Connect(function()
+RunService.RenderStepped:Connect(function()
     if char then
         for _, part in ipairs(char:GetDescendants()) do
             if part:IsA("BasePart") then
-                part.CanCollide = not noclipAtivo
+                part.CanCollide = not noclipActive
             end
         end
     end
 end)
 
-print("Script carregado!")
+print("Toon Universe | WindUI loaded!")
