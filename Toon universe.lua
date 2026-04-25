@@ -427,5 +427,81 @@ RunService.RenderStepped:Connect(function()
         end
     end
 end)
+local RunService = game:GetService("RunService")
+local Folder = workspace:WaitForChild("MonsterFolder")
 
+local Highlights = {}
+local Enabled = false
+local Connections = {}
+
+local function createHighlight(obj)
+    if Highlights[obj] then return end
+    if not obj:IsA("Model") and not obj:IsA("BasePart") then return end
+
+    local highlight = Instance.new("Highlight")
+    highlight.FillColor = Color3.fromRGB(255, 0, 0)
+    highlight.OutlineColor = Color3.fromRGB(255, 0, 0)
+    highlight.FillTransparency = 0.5
+    highlight.OutlineTransparency = 0
+    highlight.Adornee = obj
+    highlight.Parent = obj
+
+    Highlights[obj] = highlight
+end
+
+local function removeAll()
+    for obj, h in pairs(Highlights) do
+        if h then h:Destroy() end
+        Highlights[obj] = nil
+    end
+end
+
+local function start()
+    for _, v in ipairs(Folder:GetChildren()) do
+        createHighlight(v)
+    end
+
+    Connections.Added = Folder.ChildAdded:Connect(createHighlight)
+
+    Connections.Removed = Folder.ChildRemoved:Connect(function(obj)
+        if Highlights[obj] then
+            Highlights[obj]:Destroy()
+            Highlights[obj] = nil
+        end
+    end)
+
+    Connections.Loop = RunService.RenderStepped:Connect(function()
+        for obj in pairs(Highlights) do
+            if not obj or not obj.Parent then
+                if Highlights[obj] then
+                    Highlights[obj]:Destroy()
+                    Highlights[obj] = nil
+                end
+            end
+        end
+    end)
+end
+
+local function stop()
+    for _, c in pairs(Connections) do
+        if c then c:Disconnect() end
+    end
+    table.clear(Connections)
+    removeAll()
+end
+
+local Toggle = TabESP:Toggle({
+    Title = "Monster Highlight",
+    Desc = "",
+    Value = false,
+    Flag = "monster_highlight",
+    Callback = function(state)
+        Enabled = state
+        if state then
+            start()
+        else
+            stop()
+        end
+    end
+})
 print("Toon Universe | WindUI loaded!")
