@@ -571,4 +571,54 @@ local Toggle = TabMisc:Toggle({
         end
     end
 })
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+local ChaseRemote = ReplicatedStorage.Remotes.Chase
+local TeleportPart = workspace.Elevator.Model:GetChildren()[20]
+
+local teleportEnabled = false
+
+local function loopTeleport()
+    if not teleportEnabled then return end
+    local char = LocalPlayer.Character
+    if not char then return end
+    local hrp = char:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+
+    local originalCFrame = hrp.CFrame
+    local startTime = tick()
+
+    while tick() - startTime < 2 and teleportEnabled do
+        if TeleportPart and TeleportPart:IsA("BasePart") then
+            hrp.CFrame = TeleportPart.CFrame + Vector3.new(0, 5, 0)
+        end
+        task.wait(0.1)
+    end
+
+    if teleportEnabled then
+        hrp.CFrame = originalCFrame
+    end
+end
+
+ChaseRemote.OnClientEvent:Connect(function(monster, state)
+    if state == "Started" and teleportEnabled then
+        loopTeleport()
+    end
+end)
+
+local Toggle = Tab:Toggle({
+    Title = "Auto hide",
+    Desc = "",
+    Icon = "power",
+    Value = false,
+    Type = "Toggle",
+    Color = Color3.fromRGB(100, 200, 100),
+    Flag = "teleport_toggle",
+    Callback = function(state)
+        teleportEnabled = state
+        print("Teleport feature enabled:", state)
+    end
+})
 print("Toon Universe | WindUI loaded!")
