@@ -517,4 +517,58 @@ local Toggle = TabTele:Toggle({
         end
     end
 })
+TabMisc:Space()
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local workspace = game:GetService("Workspace")
+
+local lp = Players.LocalPlayer
+local char = lp.Character or lp.CharacterAdded:Wait()
+
+local conn 
+
+local function getMaxStamina()
+    local staminaIncrease = workspace:GetAttribute("StaminaIncrease") or 0
+    local staminaInt = char:GetAttribute("StaminaInt") or 1
+    local staminaBonus = char:GetAttribute("StaminaBonus") or 0
+    return 25 * staminaInt + 75 + staminaIncrease + staminaBonus
+end
+
+local function startStamina()
+    if conn then return end -- prevent duplicate loops
+
+    conn = RunService.Heartbeat:Connect(function()
+        if not char or not char.Parent then return end
+
+        local maxStam = getMaxStamina()
+        char:SetAttribute("Stamina", maxStam)
+        char:SetAttribute("NoStaminaDrain", 999)
+    end)
+end
+
+local function stopStamina()
+    if conn then
+        conn:Disconnect()
+        conn = nil
+    end
+end
+
+lp.CharacterAdded:Connect(function(newChar)
+    char = newChar
+end)
+
+local Toggle = TabMisc:Toggle({
+    Title = "Infinite Stamina",
+    Flag = "infinite_stamina",
+    Desc = "",
+    Icon = "zap",
+    Value = false,
+    Callback = function(state)
+        if state then
+            startStamina()
+        else
+            stopStamina()
+        end
+    end
+})
 print("Toon Universe | WindUI loaded!")
