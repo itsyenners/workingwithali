@@ -568,6 +568,22 @@ local function createWindow()
     TabCredits:Space()
     addText(TabCredits, tr("ali_title"), tr("ali_desc"))
     TabCredits:Space()
+    TabCredits:Button({
+        Title = "Ali's Discord Server",
+        Desc = "discord.gg/NKUefuSfqb",
+        Icon = "message-circle",
+        Justify = "Center",
+        Callback = function()
+            setclipboard("https://discord.gg/NKUefuSfqb")
+            WindUI:Notify({
+                Title = "Discord",
+                Content = "Link copied to clipboard!",
+                Icon = "message-circle",
+                Duration = 3,
+            })
+        end,
+    })
+    TabCredits:Space()
     addText(TabCredits, tr("windui_title"), tr("windui_desc"))
 
     print("Toon Universe | v1.0.0 | " .. lang .. " | loaded!")
