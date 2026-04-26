@@ -21,7 +21,7 @@ local lang = "EN"
 local T = {
     EN = {
         title = "Toon Universe  |  Farm Script",
-        author = "by Myllo & Ali",
+        author = "Thanks for using the script!",
         tab_main = "Main", tab_player = "Player", tab_farm = "Farm",
         tab_teleport = "Teleport", tab_settings = "Settings",
         tab_changelog = "Changelog", tab_credits = "Credits",
@@ -48,15 +48,17 @@ local T = {
         esp_refresh = "ESP Refresh Rate", esp_refresh_desc = "How often ESP updates (in seconds)",
         farm_delay = "Farm Delay", farm_delay_desc = "Delay between collecting each item",
         language = "Language", language_desc = "Change the script language",
-        v100_title = "v1.0.0 (Current)", v100_desc = "Revamped UI | All tabs added | Pick Up All Parts | Teleport to Electric Box | Auto Hide (by Ali) | Infinite Stamina (by Ali) | Fixed elevator barriers | Fixed Noclip | Bilingual EN/PT-BR",
-        v09_title = "v0.9", v09_desc = "Initial WindUI version | ESP, Farm, Teleport, Misc tabs",
+        v101_title = "v1.0.1 (Current)", v101_desc = "Subtitle changed to: Thanks for using the script!\nDiscord hint added in Credits\nDiscord notification on startup\nLanguage option removed from Settings\nErrors now shown in console\nChangelog reformatted\nBy Myllo and Ali now only appears as a side tag\nSubtitle changed from: By Myllo and Ali",
+        v100_title = "v1.0.0", v100_desc = "Revamped UI\nAll tabs added\nPick Up All Parts\nTeleport to Electric Box\nAuto Hide (by Ali)\nInfinite Stamina (by Ali)\nFixed elevator barriers\nFixed Noclip\nBilingual EN/PT-BR",
+        v09_title = "v0.9", v09_desc = "Initial WindUI version\nESP, Farm, Teleport, Misc tabs",
         myllo_title = "mynameismyllo (Myllo)", myllo_desc = "Creator of Toon Universe's Script (Coder)",
         ali_title = "ali_hhjjj (Ali)", ali_desc = "Helper of Toon Universe Script and Creator of Dolly's Factory Script/TZ Hub",
         windui_title = "WindUI", windui_desc = "UI Library by Footagesus",
+        discord_hint = "For questions and bugs, join Ali's server and ping @mynameismyllo",
     },
     ["PT-BR"] = {
         title = "Toon Universe  |  Script de Farm",
-        author = "por Myllo & Ali",
+        author = "Thanks for using the script!",
         tab_main = "Principal", tab_player = "Jogador", tab_farm = "Farm",
         tab_teleport = "Teleporte", tab_settings = "Configuracoes",
         tab_changelog = "Changelog", tab_credits = "Creditos",
@@ -83,11 +85,13 @@ local T = {
         esp_refresh = "Taxa de Atualizacao ESP", esp_refresh_desc = "Com que frequencia o ESP atualiza (em segundos)",
         farm_delay = "Delay do Farm", farm_delay_desc = "Delay entre coletar cada item",
         language = "Idioma", language_desc = "Mude o idioma do script",
-        v100_title = "v1.0.0 (Atual)", v100_desc = "UI Reformulada | Todas as abas | Pegar Todas as Pecas | Teleporte Caixa Eletrica | Esconder Automatico (Ali) | Stamina Infinita (Ali) | Elevador corrigido | Noclip corrigido | EN/PT-BR",
-        v09_title = "v0.9", v09_desc = "Versao inicial WindUI | Abas ESP, Farm, Teleporte, Misc",
+        v101_title = "v1.0.1 (Atual)", v101_desc = "Subtitulo alterado para: Thanks for using the script!\nDica do Discord adicionada nos Creditos\nNotificacao do Discord ao iniciar\nOpcao de idioma removida das Configuracoes\nErros agora aparecem no console\nChangelog reformatado\nBy Myllo and Ali agora aparece apenas como tag lateral\nSubtitulo alterado de: By Myllo and Ali",
+        v100_title = "v1.0.0", v100_desc = "UI Reformulada\nTodas as abas\nPegar Todas as Pecas\nTeleporte Caixa Eletrica\nEsconder Automatico (Ali)\nStamina Infinita (Ali)\nElevador corrigido\nNoclip corrigido\nEN/PT-BR",
+        v09_title = "v0.9", v09_desc = "Versao inicial WindUI\nAbas ESP, Farm, Teleporte, Misc",
         myllo_title = "mynameismyllo (Myllo)", myllo_desc = "Criador do Script do Toon Universe (Programador)",
         ali_title = "ali_hhjjj (Ali)", ali_desc = "Ajudante do Script do Toon Universe e Criador do Script do Dollys Factory",
         windui_title = "WindUI", windui_desc = "Biblioteca de UI por Footagesus",
+        discord_hint = "Em caso de questoes e bugs, entre no servidor do Ali e de ping no @mynameismyllo",
     },
 }
 
@@ -137,14 +141,15 @@ local function clearTag(tag)
 end
 
 local function addText(tab, title, desc)
-    local ok
-    ok = pcall(function() tab:Paragraph({ Title = title, Desc = desc }) end)
+    local ok, err
+    ok, err = pcall(function() tab:Paragraph({ Title = title, Desc = desc }) end)
     if not ok then
-        ok = pcall(function() tab:Label({ Title = title, Desc = desc }) end)
+        ok, err = pcall(function() tab:Label({ Title = title, Desc = desc }) end)
     end
     if not ok then
-        tab:Button({ Title = title, Desc = desc, Justify = "Left", Callback = function() end })
+        ok, err = pcall(function() tab:Button({ Title = title, Desc = desc, Justify = "Left", Callback = function() end }) end)
     end
+    if not ok then warn("[ToonUniverse] addText error: " .. tostring(err)) end
 end
 
 local function createWindow()
@@ -156,7 +161,7 @@ local function createWindow()
         Size = UDim2.fromOffset(580, 460),
     })
 
-    Window:Tag({ Title = tr("author"), Color = Color3.fromHex("#1c1c1c"), Border = true })
+    Window:Tag({ Title = "by Myllo & Ali", Color = Color3.fromHex("#1c1c1c"), Border = true })
 
     local Green  = Color3.fromHex("#10C550")
     local Yellow = Color3.fromHex("#ECA201")
@@ -244,7 +249,8 @@ local function createWindow()
             if espBig then
                 local ok2, big = pcall(function() return workspace.Map.SpecialFolder.BigMachine.Computer end)
                 if not ok2 then ok2, big = pcall(function() return workspace.Map.SpecialFolder.BigMachine.Machine end) end
-                if ok2 and big then createHighlight(big, Color3.fromRGB(255, 0, 255), "ESP_Big") end
+                if ok2 and big then createHighlight(big, Color3.fromRGB(255, 0, 255), "ESP_Big")
+                elseif not ok2 then warn("[ToonUniverse] ESP Main Machine: nao foi possivel encontrar a maquina principal") end
             end
         end
     end)
@@ -400,7 +406,8 @@ local function createWindow()
         Callback = function()
             local ok2, prompt = pcall(function() return workspace.Map.SpecialFolder.BigMachine.Computer.PromptPart end)
             if not ok2 then ok2, prompt = pcall(function() return workspace.Map.SpecialFolder.BigMachine.Machine.PromptPart end) end
-            if ok2 and prompt and root then root.CFrame = prompt.CFrame + Vector3.new(0, 3, 0) end
+            if ok2 and prompt and root then root.CFrame = prompt.CFrame + Vector3.new(0, 3, 0)
+            elseif not ok2 then warn("[ToonUniverse] Teleport Main Machine: nao foi possivel encontrar o PromptPart") end
         end,
     })
     TabTele:Space()
@@ -408,7 +415,8 @@ local function createWindow()
         Title = tr("tele_electric"), Desc = tr("tele_electric_desc"), Icon = "zap", Justify = "Center", Color = Yellow,
         Callback = function()
             local ok2, prompt = pcall(function() return workspace.Map.SpecialFolder.ElectricBoxes.ElectricBox.PromptPart end)
-            if ok2 and prompt and root then root.CFrame = prompt.CFrame + Vector3.new(0, 3, 0) end
+            if ok2 and prompt and root then root.CFrame = prompt.CFrame + Vector3.new(0, 3, 0)
+            elseif not ok2 then warn("[ToonUniverse] Teleport Electric Box: nao foi possivel encontrar o PromptPart") end
         end,
     })
     TabTele:Space()
@@ -492,6 +500,7 @@ local function createWindow()
     end)
 
     local ok3, ChaseRemote = pcall(function() return ReplicatedStorage.Remotes.Chase end)
+    if not ok3 then warn("[ToonUniverse] Auto Hide: nao foi possivel encontrar o Chase remote - " .. tostring(ChaseRemote)) end
     if ok3 and ChaseRemote then
         local function loopHide()
             if not teleportEnabled then return end
@@ -541,24 +550,11 @@ local function createWindow()
         Value = { Min = 0.1, Max = 2, Default = 0.3 },
         Callback = function(val) farmDelayValue = val end,
     })
-    TabSettings:Space()
-    pcall(function()
-        TabSettings:Dropdown({
-            Title = tr("language"), Desc = tr("language_desc"), Flag = "Language",
-            Value = lang, Values = { "EN", "PT-BR" },
-            Callback = function(val)
-                lang = val
-                WindUI:Notify({
-                    Title = lang == "EN" and "Language changed!" or "Idioma alterado!",
-                    Content = lang == "EN" and "Please re-execute the script." or "Por favor, re-execute o script.",
-                    Icon = "globe",
-                    Duration = 5,
-                })
-            end,
-        })
-    end)
+
 
     -- CHANGELOG TAB
+    addText(TabChangelog, tr("v101_title"), tr("v101_desc"))
+    TabChangelog:Space()
     addText(TabChangelog, tr("v100_title"), tr("v100_desc"))
     TabChangelog:Space()
     addText(TabChangelog, tr("v09_title"), tr("v09_desc"))
@@ -584,9 +580,11 @@ local function createWindow()
         end,
     })
     TabCredits:Space()
+    addText(TabCredits, "💬 " .. tr("discord_hint"), "")
+    TabCredits:Space()
     addText(TabCredits, tr("windui_title"), tr("windui_desc"))
 
-    print("Toon Universe | v1.0.0 | " .. lang .. " | loaded!")
+    print("Toon Universe | v1.0.1 | " .. lang .. " | loaded!")
 end
 
 WindUI:Popup({
@@ -599,6 +597,12 @@ WindUI:Popup({
                 lang = "EN"
                 local ok, err = pcall(createWindow)
                 if not ok then warn("WindUI Error: " .. tostring(err)) end
+                WindUI:Notify({
+                    Title = "Welcome!",
+                    Content = "Don't forget to join the Discord server in the Credits!",
+                    Icon = "message-circle",
+                    Duration = 6,
+                })
             end,
         },
         {
@@ -607,6 +611,12 @@ WindUI:Popup({
                 lang = "PT-BR"
                 local ok, err = pcall(createWindow)
                 if not ok then warn("WindUI Error: " .. tostring(err)) end
+                WindUI:Notify({
+                    Title = "Bem-vindo!",
+                    Content = "Nao esqueca de entrar no servidor do Discord nos Creditos!",
+                    Icon = "message-circle",
+                    Duration = 6,
+                })
             end,
         },
     },
