@@ -1,13 +1,10 @@
 local RunService = game:GetService("RunService")
-
 local cloneref = (cloneref or clonereference or function(instance) return instance end)
 local ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage"))
 
 local WindUI
 do
-    local ok, result = pcall(function()
-        return require("./src/Init")
-    end)
+    local ok, result = pcall(function() return require("./src/Init") end)
     if ok then
         WindUI = result
     else
@@ -19,7 +16,7 @@ do
     end
 end
 
--- */  Window  /* --
+-- */ Window /* --
 local Window = WindUI:CreateWindow({
     Title = "Toon Universe  |  Farm Script",
     Folder = "ToonUniverseHub",
@@ -34,45 +31,33 @@ local Window = WindUI:CreateWindow({
         Draggable = true,
         OnlyMobile = false,
         Scale = 0.5,
-        Color = ColorSequence.new(
-            Color3.fromHex("#00ff50"),
-            Color3.fromHex("#00cfff")
-        ),
+        Color = ColorSequence.new(Color3.fromHex("#00ff50"), Color3.fromHex("#00cfff")),
     },
-    Topbar = {
-        Height = 44,
-        ButtonsType = "Mac",
-    },
+    Topbar = { Height = 44, ButtonsType = "Windows" },
 })
+
 Window:EditOpenButton({
     Title = "Toon Universe",
     Icon = "monitor",
-    CornerRadius = UDim.new(0,16),
+    CornerRadius = UDim.new(0, 16),
     StrokeThickness = 2,
-    Color = ColorSequence.new( -- gradient
-        Color3.fromHex("FF0F7B"), 
-        Color3.fromHex("F89B29")
-    ),
+    Color = ColorSequence.new(Color3.fromHex("FF0F7B"), Color3.fromHex("F89B29")),
     OnlyMobile = false,
     Enabled = true,
     Draggable = true,
 })
-Window:Tag({
-    Title = "by Myllooo",
-    Color = Color3.fromHex("#1c1c1c"),
-    Border = true,
-})
 
--- */  Colors  /* --
+Window:Tag({ Title = "by Myllo & Ali", Color = Color3.fromHex("#1c1c1c"), Border = true })
+
+-- */ Colors /* --
 local Green  = Color3.fromHex("#10C550")
 local Yellow = Color3.fromHex("#ECA201")
-local Orange = Color3.fromHex("#FF7800")
 local Blue   = Color3.fromHex("#257AF7")
 local Red    = Color3.fromHex("#EF4F1D")
 local Purple = Color3.fromHex("#7775F2")
 local Grey   = Color3.fromHex("#83889E")
 
--- */  Player refs  /* --
+-- */ Player refs /* --
 local player = game.Players.LocalPlayer
 local char   = player.Character or player.CharacterAdded:Wait()
 local root   = char:FindFirstChild("HumanoidRootPart")
@@ -85,18 +70,18 @@ player.CharacterAdded:Connect(function(c)
     hum.WalkSpeed = speedValue
 end)
 
--- */  ESP Helpers  /* --
+-- */ ESP Helpers /* --
 local function createHighlight(adornee, fillColor, tag)
     if adornee:FindFirstChild(tag) then return end
     local h = Instance.new("Highlight")
-    h.Name               = tag
-    h.Adornee            = adornee
-    h.FillColor          = fillColor
-    h.OutlineColor       = Color3.new(1, 1, 1)
-    h.FillTransparency   = 0.5
+    h.Name = tag
+    h.Adornee = adornee
+    h.FillColor = fillColor
+    h.OutlineColor = Color3.new(1, 1, 1)
+    h.FillTransparency = 0.5
     h.OutlineTransparency = 0
-    h.DepthMode          = Enum.HighlightDepthMode.AlwaysOnTop
-    h.Parent             = adornee
+    h.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+    h.Parent = adornee
 end
 
 local function clearTag(tag)
@@ -105,91 +90,61 @@ local function clearTag(tag)
     end
 end
 
--- */  Sections  /* --
-local ESPSection  = Window:Section({ Title = "ESP" })
-local FarmSection = Window:Section({ Title = "Farm" })
-local TeleSection = Window:Section({ Title = "Teleport" })
-local MiscSection = Window:Section({ Title = "Misc" })
+-- */ Tabs /* --
+local TabMain  = Window:Tab({ Title = "Main",     Icon = "eye",     IconColor = Blue,   IconShape = "Square", Border = true })
+local TabPlayer = Window:Tab({ Title = "Player",   Icon = "user",    IconColor = Green,  IconShape = "Square", Border = true })
+local TabFarm  = Window:Tab({ Title = "Farm",     Icon = "zap",     IconColor = Yellow, IconShape = "Square", Border = true })
+local TabTele  = Window:Tab({ Title = "Teleport", Icon = "map-pin", IconColor = Purple, IconShape = "Square", Border = true })
+local TabCredits = Window:Tab({ Title = "Credits", Icon = "star",   IconColor = Grey,   IconShape = "Square", Border = true })
 
 -- ============================================================
--- */  ESP Tab  /* --
+-- */ Main Tab (ESP) /* --
 -- ============================================================
-local TabESP = ESPSection:Tab({
-    Title     = "ESP",
-    Icon      = "eye",
-    IconColor = Blue,
-    IconShape = "Square",
-    Border    = true,
-})
-
 local espCaps, espItens, espMaq, espComp, espMons, espBig = false, false, false, false, false, false
 
-TabESP:Toggle({
-    Title    = "ESP Capsules",
-    Value    = false,
-    Flag     = "ESPCaps",
-    Callback = function(val)
-        espCaps = val
-        if not val then clearTag("ESP_Caps") end
-    end,
+TabMain:Toggle({
+    Title = "ESP Capsules",
+    Desc = "Highlights all capsules on the map",
+    Value = false, Flag = "ESPCaps",
+    Callback = function(val) espCaps = val if not val then clearTag("ESP_Caps") end end,
 })
-TabESP:Space()
-
-TabESP:Toggle({
-    Title    = "ESP Items",
-    Value    = false,
-    Flag     = "ESPItens",
-    Callback = function(val)
-        espItens = val
-        if not val then clearTag("ESP_Itens") end
-    end,
+TabMain:Space()
+TabMain:Toggle({
+    Title = "ESP Items",
+    Desc = "Highlights all items on the map",
+    Value = false, Flag = "ESPItens",
+    Callback = function(val) espItens = val if not val then clearTag("ESP_Itens") end end,
 })
-TabESP:Space()
-
-TabESP:Toggle({
-    Title    = "ESP Machines",
-    Value    = false,
-    Flag     = "ESPMaq",
-    Callback = function(val)
-        espMaq = val
-        if not val then clearTag("ESP_Maq") end
-    end,
+TabMain:Space()
+TabMain:Toggle({
+    Title = "ESP Machines",
+    Desc = "Highlights all oil machines on the map",
+    Value = false, Flag = "ESPMaq",
+    Callback = function(val) espMaq = val if not val then clearTag("ESP_Maq") end end,
 })
-TabESP:Space()
-
-TabESP:Toggle({
-    Title    = "ESP Computers",
-    Value    = false,
-    Flag     = "ESPComp",
-    Callback = function(val)
-        espComp = val
-        if not val then clearTag("ESP_Comp") end
-    end,
+TabMain:Space()
+TabMain:Toggle({
+    Title = "ESP Computers",
+    Desc = "Highlights all computers on the map",
+    Value = false, Flag = "ESPComp",
+    Callback = function(val) espComp = val if not val then clearTag("ESP_Comp") end end,
 })
-TabESP:Space()
-
-TabESP:Toggle({
-    Title    = "ESP Monsters",
-    Value    = false,
-    Flag     = "ESPMons",
-    Callback = function(val)
-        espMons = val
-        if not val then clearTag("ESP_Mons") end
-    end,
+TabMain:Space()
+TabMain:Toggle({
+    Title = "ESP Monsters",
+    Desc = "Highlights all monsters on the map",
+    Value = false, Flag = "ESPMons",
+    Callback = function(val) espMons = val if not val then clearTag("ESP_Mons") end end,
 })
-TabESP:Space()
-
-TabESP:Toggle({
-    Title    = "ESP Big Machine",
-    Value    = false,
-    Flag     = "ESPBig",
-    Callback = function(val)
-        espBig = val
-        if not val then clearTag("ESP_Big") end
-    end,
+TabMain:Space()
+TabMain:Toggle({
+    Title = "ESP Main Machine",
+    Desc = "Highlights the main machine on the map",
+    Value = false, Flag = "ESPBig",
+    Callback = function(val) espBig = val if not val then clearTag("ESP_Big") end end,
 })
 
--- ESP loop
+-- ESP Loop
 local monstersSemRoot = { "TSquid", "TDiscardd", "TNimbus" }
 
 task.spawn(function()
@@ -239,6 +194,11 @@ task.spawn(function()
             local ok2, big = pcall(function()
                 return workspace.Map.SpecialFolder.BigMachine.Computer
             end)
+            if not ok2 then
+                ok2, big = pcall(function()
+                    return workspace.Map.SpecialFolder.BigMachine.Machine
+                end)
+            end
             if ok2 and big then
                 createHighlight(big, Color3.fromRGB(255, 0, 255), "ESP_Big")
             end
@@ -247,28 +207,82 @@ task.spawn(function()
 end)
 
 -- ============================================================
--- */  Farm Tab  /* --
+-- */ Player Tab /* --
 -- ============================================================
-local TabFarm = FarmSection:Tab({
-    Title     = "Farm",
-    Icon      = "zap",
-    IconColor = Yellow,
-    IconShape = "Square",
-    Border    = true,
+TabPlayer:Slider({
+    Title = "Walk Speed",
+    Desc = "Adjust your walking speed",
+    Flag = "Speed", Step = 1,
+    Value = { Min = 16, Max = 150, Default = 16 },
+    Callback = function(val)
+        speedValue = val
+        local hum = char:FindFirstChildOfClass("Humanoid")
+        if hum then hum.WalkSpeed = val end
+    end,
 })
 
+TabPlayer:Space()
+
+TabPlayer:Toggle({
+    Title = "Infinite Stamina",
+    Desc = "Prevents stamina from draining",
+    Value = false, Flag = "infinite_stamina", Icon = "zap",
+    Callback = function(state)
+        if state then
+            if _G.staminaConn then return end
+            _G.staminaConn = RunService.Heartbeat:Connect(function()
+                if not char or not char.Parent then return end
+                local staminaIncrease = workspace:GetAttribute("StaminaIncrease") or 0
+                local staminaInt = char:GetAttribute("StaminaInt") or 1
+                local staminaBonus = char:GetAttribute("StaminaBonus") or 0
+                local maxStam = 25 * staminaInt + 75 + staminaIncrease + staminaBonus
+                char:SetAttribute("Stamina", maxStam)
+                char:SetAttribute("NoStaminaDrain", 999)
+            end)
+        else
+            if _G.staminaConn then
+                _G.staminaConn:Disconnect()
+                _G.staminaConn = nil
+            end
+        end
+    end,
+})
+
+TabPlayer:Space()
+
+local noclipActive = false
+TabPlayer:Toggle({
+    Title = "Noclip",
+    Desc = "Walk through walls and objects",
+    Value = false, Flag = "Noclip",
+    Callback = function(val) noclipActive = val end,
+})
+
+RunService.RenderStepped:Connect(function()
+    if noclipActive and char then
+        for _, part in ipairs(char:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = false
+            end
+        end
+    end
+end)
+
+-- ============================================================
+-- */ Farm Tab /* --
+-- ============================================================
 local farmCapsulesActive = false
 TabFarm:Toggle({
-    Title    = "Farm Capsules",
-    Value    = false,
-    Flag     = "FarmCaps",
+    Title = "Pick Up All Capsules",
+    Desc = "Teleports to and collects all capsules",
+    Value = false, Flag = "FarmCaps",
     Callback = function(val)
         farmCapsulesActive = val
         task.spawn(function()
             while farmCapsulesActive do
                 for _, model in ipairs(workspace.Capsules:GetChildren()) do
                     if not farmCapsulesActive then break end
-                    local r      = model:FindFirstChild("Root")
+                    local r = model:FindFirstChild("Root")
                     local prompt = model:FindFirstChildWhichIsA("ProximityPrompt", true)
                     if r and prompt and root then
                         root.CFrame = r.CFrame + Vector3.new(0, 3, 0)
@@ -287,16 +301,17 @@ TabFarm:Space()
 
 local farmItemsActive = false
 TabFarm:Toggle({
-    Title    = "Farm Items",
-    Value    = false,
-    Flag     = "FarmItens",
+    Title = "Pick Up All Items",
+    Desc = "Teleports to and collects all items",
+    Value = false, Flag = "FarmItens",
     Callback = function(val)
         farmItemsActive = val
         task.spawn(function()
             while farmItemsActive do
                 for _, item in ipairs(workspace.Items:GetChildren()) do
                     if not farmItemsActive then break end
-                    local part   = item:FindFirstChild("Cube") or item:FindFirstChild("Cubee.003")
+                    if item.Name == "Parts" then continue end
+                    local part = item:FindFirstChild("Cube") or item:FindFirstChild("Cubee.003")
                     local prompt = item:FindFirstChild("ProximityPrompt")
                     if part and prompt and root then
                         root.CFrame = part.CFrame + Vector3.new(0, 3, 0)
@@ -313,39 +328,40 @@ TabFarm:Toggle({
 
 TabFarm:Space()
 
-TabFarm:Button({
-    Title    = "Clear All ESP",
-    Color    = Red,
-    Icon     = "trash",
-    Justify  = "Center",
-    Callback = function()
-        for _, tag in ipairs({ "ESP_Caps", "ESP_Itens", "ESP_Maq", "ESP_Comp", "ESP_Mons", "ESP_Big" }) do
-            clearTag(tag)
-        end
-        WindUI:Notify({
-            Title   = "ESP",
-            Content = "All ESP highlights removed!",
-            Icon    = "check",
-            Duration = 3,
-        })
+local farmPartsActive = false
+TabFarm:Toggle({
+    Title = "Pick Up All Parts",
+    Desc = "Teleports to and collects all parts",
+    Value = false, Flag = "FarmParts",
+    Callback = function(val)
+        farmPartsActive = val
+        task.spawn(function()
+            while farmPartsActive do
+                for _, item in ipairs(workspace.Items:GetChildren()) do
+                    if not farmPartsActive then break end
+                    if item.Name ~= "Parts" then continue end
+                    local part = item:FindFirstChild("Cube") or item:FindFirstChild("Cubee.003")
+                    local prompt = item:FindFirstChild("ProximityPrompt")
+                    if part and prompt and root then
+                        root.CFrame = part.CFrame + Vector3.new(0, 3, 0)
+                        task.wait(0.3)
+                        fireproximityprompt(prompt)
+                        task.wait(0.3)
+                    end
+                end
+                task.wait(1)
+            end
+        end)
     end,
 })
 
 -- ============================================================
--- */  Teleport Tab  /* --
+-- */ Teleport Tab /* --
 -- ============================================================
-local TabTele = TeleSection:Tab({
-    Title     = "Teleport",
-    Icon      = "map-pin",
-    IconColor = Green,
-    IconShape = "Square",
-    Border    = true,
-})
-
 TabTele:Button({
-    Title    = "Teleport to All Machines",
-    Icon     = "cpu",
-    Justify  = "Center",
+    Title = "Teleport to Machine",
+    Desc = "Teleports to each oil machine",
+    Icon = "cpu", Justify = "Center",
     Callback = function()
         for _, machine in ipairs(workspace.OilMachines:GetChildren()) do
             local prompt = machine:FindFirstChild("PromptPart")
@@ -360,9 +376,9 @@ TabTele:Button({
 TabTele:Space()
 
 TabTele:Button({
-    Title    = "Teleport to All Computers",
-    Icon     = "monitor",
-    Justify  = "Center",
+    Title = "Teleport to Computer",
+    Desc = "Teleports to each computer",
+    Icon = "monitor", Justify = "Center",
     Callback = function()
         for _, comp in ipairs(workspace.Computers:GetChildren()) do
             local prompt = comp:FindFirstChild("PromptPart")
@@ -377,13 +393,33 @@ TabTele:Button({
 TabTele:Space()
 
 TabTele:Button({
-    Title    = "Teleport to Big Machine",
-    Icon     = "building",
-    Justify  = "Center",
-    Color    = Purple,
+    Title = "Teleport to Main Machine",
+    Desc = "Teleports to the main machine",
+    Icon = "building", Justify = "Center", Color = Purple,
     Callback = function()
         local ok2, prompt = pcall(function()
             return workspace.Map.SpecialFolder.BigMachine.Computer.PromptPart
+        end)
+        if not ok2 then
+            ok2, prompt = pcall(function()
+                return workspace.Map.SpecialFolder.BigMachine.Machine.PromptPart
+            end)
+        end
+        if ok2 and prompt and root then
+            root.CFrame = prompt.CFrame + Vector3.new(0, 3, 0)
+        end
+    end,
+})
+
+TabTele:Space()
+
+TabTele:Button({
+    Title = "Teleport to Electric Box",
+    Desc = "Teleports to the electric box during blackouts",
+    Icon = "zap", Justify = "Center", Color = Yellow,
+    Callback = function()
+        local ok2, prompt = pcall(function()
+            return workspace.Map.SpecialFolder.ElectricBoxes.ElectricBox.PromptPart
         end)
         if ok2 and prompt and root then
             root.CFrame = prompt.CFrame + Vector3.new(0, 3, 0)
@@ -391,68 +427,17 @@ TabTele:Button({
     end,
 })
 
--- ============================================================
--- */  Misc Tab  /* --
--- ============================================================
-local TabMisc = MiscSection:Tab({
-    Title     = "Misc",
-    Icon      = "settings",
-    IconColor = Grey,
-    IconShape = "Square",
-    Border    = true,
-})
-
-TabMisc:Slider({
-    Title    = "Walk Speed",
-    Flag     = "Speed",
-    Step     = 1,
-    Value    = {
-        Min     = 16,
-        Max     = 150,
-        Default = 16,
-    },
-    Callback = function(val)
-        speedValue = val
-        local hum = char:FindFirstChildOfClass("Humanoid")
-        if hum then hum.WalkSpeed = val end
-    end,
-})
-
-TabMisc:Space()
-
-local noclipActive = false
-TabMisc:Toggle({
-    Title    = "Noclip",
-    Value    = false,
-    Flag     = "Noclip",
-    Callback = function(val)
-        noclipActive = val
-    end,
-})
-
-RunService.RenderStepped:Connect(function()
-    if char then
-        for _, part in ipairs(char:GetDescendants()) do
-            if part:IsA("BasePart") then
-                part.CanCollide = not noclipActive
-            end
-        end
-    end
-end)
 TabTele:Space()
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
 
+-- Auto Elevator
 local MapStats = workspace:WaitForChild("MapStats")
-local Value = MapStats:WaitForChild("IsFloorCompleted")
-
+local FloorValue = MapStats:WaitForChild("IsFloorCompleted")
 local Elevator = workspace:WaitForChild("Elevator")
+local elevRunning = false
+local elevEnabled = false
+local elevConnection
 
-local running = false
-local enabled = false
-local connection
-
-local function getCFrame()
+local function getElevCFrame()
     if Elevator.PrimaryPart then
         return Elevator.PrimaryPart.CFrame
     else
@@ -461,164 +446,101 @@ local function getCFrame()
     end
 end
 
-local function teleportLoop()
-    if running then return end
-    running = true
-
-    while enabled and Value.Value do
-        local char = LocalPlayer.Character
-        local cf = getCFrame()
-
+local function elevTeleportLoop()
+    if elevRunning then return end
+    elevRunning = true
+    while elevEnabled and FloorValue.Value do
+        local cf = getElevCFrame()
         if char and char:FindFirstChild("HumanoidRootPart") and cf then
             char.HumanoidRootPart.CFrame = cf
         end
-
         task.wait(0.1)
     end
-
-    running = false
+    elevRunning = false
 end
 
-local function start()
-    if connection then connection:Disconnect() end
+local function elevStart()
+    -- Remove barreiras
+    local barrier = workspace.Elevator:FindFirstChild("Barrier")
+    local safetyBarrier = workspace:FindFirstChild("SafteyBarrier")
+    if barrier then barrier.CanCollide = false end
+    if safetyBarrier then safetyBarrier.CanCollide = false end
 
-    connection = Value:GetPropertyChangedSignal("Value"):Connect(function()
-        if enabled and Value.Value then
-            teleportLoop()
+    if elevConnection then elevConnection:Disconnect() end
+    elevConnection = FloorValue:GetPropertyChangedSignal("Value"):Connect(function()
+        if elevEnabled and FloorValue.Value then
+            -- Remove barreiras novamente quando floor completa
+            if barrier then barrier.CanCollide = false end
+            if safetyBarrier then safetyBarrier.CanCollide = false end
+            elevTeleportLoop()
         end
     end)
+    if FloorValue.Value then elevTeleportLoop() end
+end
 
-    if Value.Value then
-        teleportLoop()
+local function elevStop()
+    elevEnabled = false
+    elevRunning = false
+    if elevConnection then
+        elevConnection:Disconnect()
+        elevConnection = nil
     end
 end
 
-local function stop()
-    enabled = false
-    running = false
-    if connection then
-        connection:Disconnect()
-        connection = nil
-    end
-end
-
-local Toggle = TabTele:Toggle({
-    Title = "Auto Elevator",
-    Desc = "Teleport to elevator when floor complete",
-    Icon = "power",
-    Value = false,
-    Flag = "auto_elevator",
+TabTele:Toggle({
+    Title = "Auto Teleport to Elevator",
+    Desc = "Teleports to elevator when the floor is complete",
+    Icon = "power", Value = false, Flag = "auto_elevator",
     Callback = function(state)
-        enabled = state
-        if state then
-            start()
-        else
-            stop()
-        end
-    end
+        elevEnabled = state
+        if state then elevStart() else elevStop() end
+    end,
 })
-TabMisc:Space()
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local workspace = game:GetService("Workspace")
 
-local lp = Players.LocalPlayer
-local char = lp.Character or lp.CharacterAdded:Wait()
+TabTele:Space()
 
-local conn 
-
-local function getMaxStamina()
-    local staminaIncrease = workspace:GetAttribute("StaminaIncrease") or 0
-    local staminaInt = char:GetAttribute("StaminaInt") or 1
-    local staminaBonus = char:GetAttribute("StaminaBonus") or 0
-    return 25 * staminaInt + 75 + staminaIncrease + staminaBonus
-end
-
-local function startStamina()
-    if conn then return end -- prevent duplicate loops
-
-    conn = RunService.Heartbeat:Connect(function()
-        if not char or not char.Parent then return end
-
-        local maxStam = getMaxStamina()
-        char:SetAttribute("Stamina", maxStam)
-        char:SetAttribute("NoStaminaDrain", 999)
-    end)
-end
-
-local function stopStamina()
-    if conn then
-        conn:Disconnect()
-        conn = nil
-    end
-end
-
-lp.CharacterAdded:Connect(function(newChar)
-    char = newChar
-end)
-
-local Toggle = TabMisc:Toggle({
-    Title = "Infinite Stamina",
-    Flag = "infinite_stamina",
-    Desc = "",
-    Icon = "zap",
-    Value = false,
-    Callback = function(state)
-        if state then
-            startStamina()
-        else
-            stopStamina()
-        end
-    end
-})
-local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local LocalPlayer = Players.LocalPlayer
-
+-- Auto Hide
 local ChaseRemote = ReplicatedStorage.Remotes.Chase
 local TeleportPart = workspace.Elevator.Model:GetChildren()[20]
-
 local teleportEnabled = false
 
-local function loopTeleport()
+local function loopHide()
     if not teleportEnabled then return end
-    local char = LocalPlayer.Character
-    if not char then return end
-    local hrp = char:FindFirstChild("HumanoidRootPart")
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")
     if not hrp then return end
-
     local originalCFrame = hrp.CFrame
     local startTime = tick()
-
     while tick() - startTime < 2 and teleportEnabled do
         if TeleportPart and TeleportPart:IsA("BasePart") then
             hrp.CFrame = TeleportPart.CFrame + Vector3.new(0, 5, 0)
         end
         task.wait(0.1)
     end
-
-    if teleportEnabled then
-        hrp.CFrame = originalCFrame
-    end
+    if teleportEnabled then hrp.CFrame = originalCFrame end
 end
 
 ChaseRemote.OnClientEvent:Connect(function(monster, state)
     if state == "Started" and teleportEnabled then
-        loopTeleport()
+        loopHide()
     end
 end)
 
-local Toggle = Tab:Toggle({
-    Title = "Auto hide",
-    Desc = "",
-    Icon = "power",
-    Value = false,
-    Type = "Toggle",
-    Color = Color3.fromRGB(100, 200, 100),
-    Flag = "teleport_toggle",
+TabTele:Toggle({
+    Title = "Auto Hide",
+    Desc = "Automatically hides when a monster chases you",
+    Icon = "shield", Value = false, Flag = "teleport_toggle",
     Callback = function(state)
         teleportEnabled = state
-        print("Teleport feature enabled:", state)
-    end
+    end,
 })
-print("Toon Universe | WindUI loaded!")
+
+-- ============================================================
+-- */ Credits Tab /* --
+-- ============================================================
+TabCredits:Label({ Title = "Myllo", Desc = "Creator of Toon Universe's Script (Coder)" })
+TabCredits:Space()
+TabCredits:Label({ Title = "Ali", Desc = "Helper of Toon Universe's Script and Creator of Dolly's Factory Script" })
+TabCredits:Space()
+TabCredits:Label({ Title = "WindUI", Desc = "UI Library by Footagesus — github.com/Footagesus/WindUI" })
+
+print("Toon Universe | v1.0.0 loaded!")
