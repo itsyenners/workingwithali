@@ -1,3 +1,22 @@
+local baseplate = Instance.new("Part")
+baseplate.Name = "ClientAntiVoid"
+baseplate.Size = Vector3.new(2048, 10, 2048)
+baseplate.Position = Vector3.new(0, -200, 0)
+baseplate.Anchored = true
+baseplate.CanCollide = true
+baseplate.BrickColor = BrickColor.new("Really black")
+baseplate.Material = Enum.Material.ForceField
+baseplate.Parent = game:GetService("Workspace")
+
+task.spawn(function()
+    while task.wait(1) do
+        local character = game.Players.LocalPlayer.Character
+        if character and character:FindFirstChild("HumanoidRootPart") then
+            baseplate.Position = Vector3.new(character.HumanoidRootPart.Position.X, -200, character.HumanoidRootPart.Position.Z)
+        end
+    end
+end)
+
 local RunService = game:GetService("RunService")
 local cloneref = (cloneref or clonereference or function(instance) return instance end)
 local ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage"))
