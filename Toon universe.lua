@@ -67,7 +67,10 @@ local T = {
         esp_refresh = "ESP Refresh Rate", esp_refresh_desc = "How often ESP updates (in seconds)",
         farm_delay = "Farm Delay", farm_delay_desc = "Delay between collecting each item",
         language = "Language", language_desc = "Change the script language",
-        v101_title = "v1.0.1 (Current)", v101_desc = "Subtitle changed to: Thanks for using the script!\nDiscord hint added in Credits\nDiscord notification on startup\nLanguage option removed from Settings\nErrors now shown in console\nChangelog reformatted\nBy Myllo and Ali now only appears as a side tag\nSubtitle changed from: By Myllo and Ali",
+        skillcheck_title = "Auto Skillcheck", skillcheck_desc = "Automatically completes computer skillchecks",
+        instant_skillcheck_title = "Instant Auto Skillcheck", instant_skillcheck_desc = "Complete skillcheck without clicking",
+        v102_title = "v1.0.2 (Current)", v102_desc = "Auto Skillcheck added (by Ali)\nInstant Auto Skillcheck added (by Ali)\nAnti-Void protection added (by Ali)\nBilingual toggle titles fixed",
+        v101_title = "v1.0.1", v101_desc = "Subtitle changed to: Thanks for using the script!\nDiscord hint added in Credits\nDiscord notification on startup\nLanguage option removed from Settings\nErrors now shown in console\nChangelog reformatted\nBy Myllo and Ali now only appears as a side tag\nSubtitle changed from: By Myllo and Ali",
         v100_title = "v1.0.0", v100_desc = "Revamped UI\nAll tabs added\nPick Up All Parts\nTeleport to Electric Box\nAuto Hide (by Ali)\nInfinite Stamina (by Ali)\nFixed elevator barriers\nFixed Noclip\nBilingual EN/PT-BR",
         v09_title = "v0.9", v09_desc = "Initial WindUI version\nESP, Farm, Teleport, Misc tabs",
         myllo_title = "mynameismyllo (Myllo)", myllo_desc = "Creator of Toon Universe's Script (Coder)",
@@ -104,7 +107,10 @@ local T = {
         esp_refresh = "Taxa de Atualizacao ESP", esp_refresh_desc = "Com que frequencia o ESP atualiza (em segundos)",
         farm_delay = "Delay do Farm", farm_delay_desc = "Delay entre coletar cada item",
         language = "Idioma", language_desc = "Mude o idioma do script",
-        v101_title = "v1.0.1 (Atual)", v101_desc = "Subtitulo alterado para: Thanks for using the script!\nDica do Discord adicionada nos Creditos\nNotificacao do Discord ao iniciar\nOpcao de idioma removida das Configuracoes\nErros agora aparecem no console\nChangelog reformatado\nBy Myllo and Ali agora aparece apenas como tag lateral\nSubtitulo alterado de: By Myllo and Ali",
+        skillcheck_title = "Verificacao automatica de habilidades", skillcheck_desc = "Completa automaticamente os testes de habilidade do computador",
+        instant_skillcheck_title = "Verificacao automatica instantanea", instant_skillcheck_desc = "Conclua o teste de habilidade sem clicar",
+        v102_title = "v1.0.2 (Atual)", v102_desc = "Verificacao automatica de habilidades adicionada (por Ali)\nVerificacao automatica instantanea adicionada (por Ali)\nProtecao Anti-Void adicionada (por Ali)\nTitulos bilíngues dos toggles corrigidos",
+        v101_title = "v1.0.1", v101_desc = "Subtitulo alterado para: Thanks for using the script!\nDica do Discord adicionada nos Creditos\nNotificacao do Discord ao iniciar\nOpcao de idioma removida das Configuracoes\nErros agora aparecem no console\nChangelog reformatado\nBy Myllo and Ali agora aparece apenas como tag lateral\nSubtitulo alterado de: By Myllo and Ali",
         v100_title = "v1.0.0", v100_desc = "UI Reformulada\nTodas as abas\nPegar Todas as Pecas\nTeleporte Caixa Eletrica\nEsconder Automatico (Ali)\nStamina Infinita (Ali)\nElevador corrigido\nNoclip corrigido\nEN/PT-BR",
         v09_title = "v0.9", v09_desc = "Versao inicial WindUI\nAbas ESP, Farm, Teleporte, Misc",
         myllo_title = "mynameismyllo (Myllo)", myllo_desc = "Criador do Script do Toon Universe (Programador)",
@@ -544,246 +550,144 @@ local function createWindow()
         Title = tr("auto_hide"), Desc = tr("auto_hide_desc"), Icon = "shield", Value = false, Flag = "AutoHide",
         Callback = function(state) teleportEnabled = state end,
     })
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local LocalPlayer = Players.LocalPlayer
 
-local AutoSkillcheck = false
 
-local function FireConnections(signal)
-	local ok, conns = pcall(getconnections, signal)
-	if ok then
-		for _, c in conns do
-			pcall(function() c:Fire() end)
-		end
-	end
-end
+    -- SKILLCHECK
+    local AutoSkillcheck = false
 
-local function NormRot(r)
-	return (r + 180) % 360 - 180
-end
-
-local Toggle = TabFarm:Toggle({
-	Title = "Auto Skillcheck\Verificação automática de habilidades",
-	Desc = "",
-	Icon = "cpu",
-	Value = false,
-	Type = "Toggle",
-	Color = Color3.fromRGB(100, 200, 100),
-	Flag = "auto_skillcheck",
-	Callback = function(state)
-		AutoSkillcheck = state
-	end
-})
-
--- Computer Skillcheck
-task.spawn(function()
-	local RoundSkillcheck = LocalPlayer.PlayerGui:WaitForChild("RoundSkillcheck", 15)
-	if not RoundSkillcheck then return end
-
-	local Container = RoundSkillcheck:WaitForChild("Container")
-	local Normal = Container:WaitForChild("Normal")
-	local AimImage = Normal:WaitForChild("AimImage")
-	local Target = Normal:WaitForChild("Target")
-	local HitBtn = Normal:WaitForChild("Hit")
-
-	local fired = false
-	local lastV7 = nil
-	local lastVisible = false
-
-	RunService.Heartbeat:Connect(function()
-		if not AutoSkillcheck then return end
-
-		local visible = Normal.Visible
-		if visible ~= lastVisible then
-			if visible then
-				fired = false
-				lastV7 = nil
-			end
-			lastVisible = visible
-		end
-		if not visible or fired then return end
-
-		local aim = NormRot(AimImage.Rotation + 180)
-		local zoneStart = NormRot(Target.Rotation - 30)
-		local v7 = math.abs(((aim - zoneStart) + 180) % 360 - 180) / 60
-
-		if lastV7 ~= nil and lastV7 < 0.5 and v7 >= 0.5 then
-			fired = true
-			FireConnections(HitBtn.MouseButton1Down)
-		end
-
-		lastV7 = v7
-	end)
-end)
-
--- OilMachine Skillcheck
-task.spawn(function()
-	local LockUI = LocalPlayer.PlayerGui:WaitForChild("LockUI", 15)
-	if not LockUI then return end
-
-	local HUD = LockUI:WaitForChild("HUD")
-	local Skillcheck = HUD:WaitForChild("Skillcheck")
-	local Main = Skillcheck:WaitForChild("Main")
-	local Marker = Main:WaitForChild("Marker")
-	local Objective = Main:WaitForChild("Objective")
-	local MobileBtn = Main:WaitForChild("MobileButtonClick")
-
-	local fired = false
-	local lastDist = nil
-	local lastVisible = false
-
-	RunService.Heartbeat:Connect(function()
-		if not AutoSkillcheck then return end
-
-		local visible = Marker.Visible
-		if visible ~= lastVisible then
-			if visible then
-				fired = false
-				lastDist = nil
-			end
-			lastVisible = visible
-		end
-		if not visible or fired then return end
-
-		local mCenter = Marker.AbsolutePosition.X + Marker.AbsoluteSize.X * 0.5
-		local oCenter = Objective.AbsolutePosition.X + Objective.AbsoluteSize.X * 0.5
-		local dist = mCenter - oCenter
-
-		if lastDist ~= nil and lastDist < 0 and dist >= 0 then
-			fired = true
-			FireConnections(MobileBtn.MouseButton1Down)
-		end
-
-		lastDist = dist
-	end)
-end)
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local originalComputerSkillcheck
-local originalOilStart
-local patched = false
-
-local function safeRequire(path)
-    local ok, mod = pcall(function() return require(path) end)
-    if not ok then
-        warn("[Skillcheck] require failed for", tostring(path), ":", mod)
-        return false, nil
+    local function FireConnections(signal)
+        local ok, conns = pcall(getconnections, signal)
+        if ok then
+            for _, c in conns do
+                pcall(function() c:Fire() end)
+            end
+        end
     end
-    return true, mod
-end
 
-local function applyPatches()
-    if patched then return end
+    local function NormRot(r)
+        return (r + 180) % 360 - 180
+    end
 
-    do
+    TabFarm:Space()
+    TabFarm:Toggle({
+        Title = tr("skillcheck_title"), Desc = tr("skillcheck_desc"),
+        Icon = "cpu", Value = false, Flag = "auto_skillcheck",
+        Callback = function(state) AutoSkillcheck = state end,
+    })
+
+    task.spawn(function()
+        local RoundSkillcheck = game.Players.LocalPlayer.PlayerGui:WaitForChild("RoundSkillcheck", 15)
+        if not RoundSkillcheck then return end
+        local Container = RoundSkillcheck:WaitForChild("Container")
+        local Normal = Container:WaitForChild("Normal")
+        local AimImage = Normal:WaitForChild("AimImage")
+        local Target = Normal:WaitForChild("Target")
+        local HitBtn = Normal:WaitForChild("Hit")
+        local fired, lastV7, lastVisible = false, nil, false
+        RunService.Heartbeat:Connect(function()
+            if not AutoSkillcheck then return end
+            local visible = Normal.Visible
+            if visible ~= lastVisible then
+                if visible then fired = false lastV7 = nil end
+                lastVisible = visible
+            end
+            if not visible or fired then return end
+            local aim = NormRot(AimImage.Rotation + 180)
+            local zoneStart = NormRot(Target.Rotation - 30)
+            local v7 = math.abs(((aim - zoneStart) + 180) % 360 - 180) / 60
+            if lastV7 ~= nil and lastV7 < 0.5 and v7 >= 0.5 then
+                fired = true
+                FireConnections(HitBtn.MouseButton1Down)
+            end
+            lastV7 = v7
+        end)
+    end)
+
+    task.spawn(function()
+        local LockUI = game.Players.LocalPlayer.PlayerGui:WaitForChild("LockUI", 15)
+        if not LockUI then return end
+        local HUD = LockUI:WaitForChild("HUD")
+        local Skillcheck = HUD:WaitForChild("Skillcheck")
+        local Main = Skillcheck:WaitForChild("Main")
+        local Marker = Main:WaitForChild("Marker")
+        local Objective = Main:WaitForChild("Objective")
+        local MobileBtn = Main:WaitForChild("MobileButtonClick")
+        local fired, lastDist, lastVisible = false, nil, false
+        RunService.Heartbeat:Connect(function()
+            if not AutoSkillcheck then return end
+            local visible = Marker.Visible
+            if visible ~= lastVisible then
+                if visible then fired = false lastDist = nil end
+                lastVisible = visible
+            end
+            if not visible or fired then return end
+            local mCenter = Marker.AbsolutePosition.X + Marker.AbsoluteSize.X * 0.5
+            local oCenter = Objective.AbsolutePosition.X + Objective.AbsoluteSize.X * 0.5
+            local dist = mCenter - oCenter
+            if lastDist ~= nil and lastDist < 0 and dist >= 0 then
+                fired = true
+                FireConnections(MobileBtn.MouseButton1Down)
+            end
+            lastDist = dist
+        end)
+    end)
+
+    -- INSTANT SKILLCHECK
+    local originalComputerSkillcheck, originalOilStart, patched = nil, nil, false
+
+    local function safeRequire(path)
+        local ok, mod = pcall(function() return require(path) end)
+        if not ok then warn("[Skillcheck] require failed:", mod) return false, nil end
+        return true, mod
+    end
+
+    local function applyPatches()
+        if patched then return end
         local ok, ComputerModule = safeRequire(ReplicatedStorage.Modules.SkillChecks.ComputerSkillCheck)
         if ok and type(ComputerModule) == "table" and type(ComputerModule.Skillcheck) == "function" then
             originalComputerSkillcheck = ComputerModule.Skillcheck
             ComputerModule.Skillcheck = function(p1, p2, p3, p4)
-                local startTime = tick()
-                local okCall, resultOrErr = pcall(originalComputerSkillcheck, p1, p2, p3, p4)
-                local elapsed = tick() - startTime
-
-                if not okCall then
-                    warn(string.format("[Skillcheck] Computer original errored after %.3fs: %s", elapsed, tostring(resultOrErr)))
-                else
-                    print(string.format("[Skillcheck] Computer original finished in %.3fs, original returned: %s", elapsed, tostring(resultOrErr)))
-                end
-
-                print("[Skillcheck] Computer: Perfect!")
-                return "Perfect"
-            end
-        else
-            warn("[Skillcheck] ComputerModule.Skillcheck not found; creating fallback that returns 'Perfect'.")
-            ReplicatedStorage.Modules.SkillChecks.ComputerSkillCheck = ReplicatedStorage.Modules.SkillChecks.ComputerSkillCheck or {}
-            ReplicatedStorage.Modules.SkillChecks.ComputerSkillCheck.Skillcheck = function()
-                print("[Skillcheck] Computer fallback: Perfect!")
+                pcall(originalComputerSkillcheck, p1, p2, p3, p4)
                 return "Perfect"
             end
         end
-    end
-
-    do
-        local ok, OilModule = safeRequire(ReplicatedStorage.Modules.SkillChecks.OilMachineSkillCheck)
-        if ok and type(OilModule) == "table" and type(OilModule.Start) == "function" then
+        local ok2, OilModule = safeRequire(ReplicatedStorage.Modules.SkillChecks.OilMachineSkillCheck)
+        if ok2 and type(OilModule) == "table" and type(OilModule.Start) == "function" then
             originalOilStart = OilModule.Start
             OilModule.Start = function(p1, p2, p3)
-                local startTime = tick()
-
-                if p2 ~= nil and type(p2) ~= "number" then
-                    warn("[Skillcheck] Oil Start received non-number p2; coercing to 0.")
-                    p2 = 0
-                end
-
-                local okCall, resultOrErr = pcall(originalOilStart, p1, p2, p3)
-                local elapsed = tick() - startTime
-
-                if not okCall then
-                    warn(string.format("[Skillcheck] Oil original errored after %.3fs: %s", elapsed, tostring(resultOrErr)))
-                else
-                    print(string.format("[Skillcheck] Oil original finished in %.3fs, original returned: %s", elapsed, tostring(resultOrErr)))
-                end
-
-                print("[Skillcheck] Oil Machine: Perfect!")
-                return "Perfect"
-            end
-        else
-            warn("[Skillcheck] OilModule.Start not found; creating fallback that returns 'Perfect'.")
-            ReplicatedStorage.Modules.SkillChecks.OilMachineSkillCheck = ReplicatedStorage.Modules.SkillChecks.OilMachineSkillCheck or {}
-            ReplicatedStorage.Modules.SkillChecks.OilMachineSkillCheck.Start = function()
-                print("[Skillcheck] Oil fallback: Perfect!")
+                if p2 ~= nil and type(p2) ~= "number" then p2 = 0 end
+                pcall(originalOilStart, p1, p2, p3)
                 return "Perfect"
             end
         end
+        patched = true
+        print("[ToonUniverse] Instant Skillcheck: active.")
     end
 
-    patched = true
-    print("Skillcheck Loaded. All checks will now return 'Perfect'.")
-end
-
-local function removePatches()
-    if not patched then return end
-
-    local ok, ComputerModule = pcall(function() return ReplicatedStorage.Modules.SkillChecks.ComputerSkillCheck end)
-    if ok and type(ComputerModule) == "table" and originalComputerSkillcheck then
-        ComputerModule.Skillcheck = originalComputerSkillcheck
-        originalComputerSkillcheck = nil
+    local function removePatches()
+        if not patched then return end
+        local ok, ComputerModule = pcall(function() return ReplicatedStorage.Modules.SkillChecks.ComputerSkillCheck end)
+        if ok and originalComputerSkillcheck then ComputerModule.Skillcheck = originalComputerSkillcheck originalComputerSkillcheck = nil end
+        local ok2, OilModule = pcall(function() return ReplicatedStorage.Modules.SkillChecks.OilMachineSkillCheck end)
+        if ok2 and originalOilStart then OilModule.Start = originalOilStart originalOilStart = nil end
+        patched = false
+        print("[ToonUniverse] Instant Skillcheck: removed.")
     end
 
-    local ok2, OilModule = pcall(function() return ReplicatedStorage.Modules.SkillChecks.OilMachineSkillCheck end)
-    if ok2 and type(OilModule) == "table" and originalOilStart then
-        OilModule.Start = originalOilStart
-        originalOilStart = nil
-    end
-
-    patched = false
-    print("Skillcheck patches removed. Originals restored where available.")
-end
-
-local Toggle = TabFarm:Toggle({
-    Title = "Instant auto skillcheck\Verificação automática instantânea de habilidades",
-    Desc = "Complete skillcheck without clicking\Conclua o teste de habilidade sem clicar",
-    Icon = "power",
-    Value = false,
-    Type = "Toggle",
-    Color = Color3.fromRGB(100, 200, 100),
-    Locked = false,
-    Flag = "instantskill_toggle",
-    Callback = function(state)
-        print("State changed:", state)
-        if state then
-            local ok, err = pcall(applyPatches)
-            if not ok then
-                warn("[Skillcheck] Failed to apply patches:", err)
+    TabFarm:Space()
+    TabFarm:Toggle({
+        Title = tr("instant_skillcheck_title"), Desc = tr("instant_skillcheck_desc"),
+        Icon = "power", Value = false, Flag = "instantskill_toggle",
+        Callback = function(state)
+            if state then
+                local ok, err = pcall(applyPatches)
+                if not ok then warn("[ToonUniverse] Instant Skillcheck error:", err) end
+            else
+                local ok, err = pcall(removePatches)
+                if not ok then warn("[ToonUniverse] Instant Skillcheck remove error:", err) end
             end
-        else
-            local ok, err = pcall(removePatches)
-            if not ok then
-                warn("[Skillcheck] Failed to remove patches:", err)
-            end
-        end
-    end
-})
+        end,
+    })
 
     -- SETTINGS TAB
     TabSettings:Slider({
@@ -812,6 +716,8 @@ local Toggle = TabFarm:Toggle({
 
 
     -- CHANGELOG TAB
+    addText(TabChangelog, tr("v102_title"), tr("v102_desc"))
+    TabChangelog:Space()
     addText(TabChangelog, tr("v101_title"), tr("v101_desc"))
     TabChangelog:Space()
     addText(TabChangelog, tr("v100_title"), tr("v100_desc"))
@@ -843,7 +749,7 @@ local Toggle = TabFarm:Toggle({
     TabCredits:Space()
     addText(TabCredits, tr("windui_title"), tr("windui_desc"))
 
-    print("Toon Universe | v1.0.1 | " .. lang .. " | loaded!")
+    print("Toon Universe | v1.0.2 | " .. lang .. " | loaded!")
 end
 
 WindUI:Popup({
@@ -858,7 +764,7 @@ WindUI:Popup({
                 if not ok then warn("WindUI Error: " .. tostring(err)) end
                 WindUI:Notify({
                     Title = "Welcome!",
-                    Content = "Don't forget to join the Discord server in the Credits!",
+                    Content = "Don't forget to join the Discord server in the Credits! The script has updated, check the Changelog!",
                     Icon = "message-circle",
                     Duration = 6,
                 })
@@ -872,7 +778,7 @@ WindUI:Popup({
                 if not ok then warn("WindUI Error: " .. tostring(err)) end
                 WindUI:Notify({
                     Title = "Bem-vindo!",
-                    Content = "Nao esqueca de entrar no servidor do Discord nos Creditos!",
+                    Content = "Nao esqueca de entrar no servidor do Discord nos Creditos! O script foi atualizado, veja o Changelog!",
                     Icon = "message-circle",
                     Duration = 6,
                 })
