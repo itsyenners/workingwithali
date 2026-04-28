@@ -544,6 +544,246 @@ local function createWindow()
         Title = tr("auto_hide"), Desc = tr("auto_hide_desc"), Icon = "shield", Value = false, Flag = "AutoHide",
         Callback = function(state) teleportEnabled = state end,
     })
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+
+local AutoSkillcheck = false
+
+local function FireConnections(signal)
+	local ok, conns = pcall(getconnections, signal)
+	if ok then
+		for _, c in conns do
+			pcall(function() c:Fire() end)
+		end
+	end
+end
+
+local function NormRot(r)
+	return (r + 180) % 360 - 180
+end
+
+local Toggle = TabFarm:Toggle({
+	Title = "Auto Skillcheck\Verificação automática de habilidades",
+	Desc = "",
+	Icon = "cpu",
+	Value = false,
+	Type = "Toggle",
+	Color = Color3.fromRGB(100, 200, 100),
+	Flag = "auto_skillcheck",
+	Callback = function(state)
+		AutoSkillcheck = state
+	end
+})
+
+-- Computer Skillcheck
+task.spawn(function()
+	local RoundSkillcheck = LocalPlayer.PlayerGui:WaitForChild("RoundSkillcheck", 15)
+	if not RoundSkillcheck then return end
+
+	local Container = RoundSkillcheck:WaitForChild("Container")
+	local Normal = Container:WaitForChild("Normal")
+	local AimImage = Normal:WaitForChild("AimImage")
+	local Target = Normal:WaitForChild("Target")
+	local HitBtn = Normal:WaitForChild("Hit")
+
+	local fired = false
+	local lastV7 = nil
+	local lastVisible = false
+
+	RunService.Heartbeat:Connect(function()
+		if not AutoSkillcheck then return end
+
+		local visible = Normal.Visible
+		if visible ~= lastVisible then
+			if visible then
+				fired = false
+				lastV7 = nil
+			end
+			lastVisible = visible
+		end
+		if not visible or fired then return end
+
+		local aim = NormRot(AimImage.Rotation + 180)
+		local zoneStart = NormRot(Target.Rotation - 30)
+		local v7 = math.abs(((aim - zoneStart) + 180) % 360 - 180) / 60
+
+		if lastV7 ~= nil and lastV7 < 0.5 and v7 >= 0.5 then
+			fired = true
+			FireConnections(HitBtn.MouseButton1Down)
+		end
+
+		lastV7 = v7
+	end)
+end)
+
+-- OilMachine Skillcheck
+task.spawn(function()
+	local LockUI = LocalPlayer.PlayerGui:WaitForChild("LockUI", 15)
+	if not LockUI then return end
+
+	local HUD = LockUI:WaitForChild("HUD")
+	local Skillcheck = HUD:WaitForChild("Skillcheck")
+	local Main = Skillcheck:WaitForChild("Main")
+	local Marker = Main:WaitForChild("Marker")
+	local Objective = Main:WaitForChild("Objective")
+	local MobileBtn = Main:WaitForChild("MobileButtonClick")
+
+	local fired = false
+	local lastDist = nil
+	local lastVisible = false
+
+	RunService.Heartbeat:Connect(function()
+		if not AutoSkillcheck then return end
+
+		local visible = Marker.Visible
+		if visible ~= lastVisible then
+			if visible then
+				fired = false
+				lastDist = nil
+			end
+			lastVisible = visible
+		end
+		if not visible or fired then return end
+
+		local mCenter = Marker.AbsolutePosition.X + Marker.AbsoluteSize.X * 0.5
+		local oCenter = Objective.AbsolutePosition.X + Objective.AbsoluteSize.X * 0.5
+		local dist = mCenter - oCenter
+
+		if lastDist ~= nil and lastDist < 0 and dist >= 0 then
+			fired = true
+			FireConnections(MobileBtn.MouseButton1Down)
+		end
+
+		lastDist = dist
+	end)
+end)
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local originalComputerSkillcheck
+local originalOilStart
+local patched = false
+
+local function safeRequire(path)
+    local ok, mod = pcall(function() return require(path) end)
+    if not ok then
+        warn("[Skillcheck] require failed for", tostring(path), ":", mod)
+        return false, nil
+    end
+    return true, mod
+end
+
+local function applyPatches()
+    if patched then return end
+
+    do
+        local ok, ComputerModule = safeRequire(ReplicatedStorage.Modules.SkillChecks.ComputerSkillCheck)
+        if ok and type(ComputerModule) == "table" and type(ComputerModule.Skillcheck) == "function" then
+            originalComputerSkillcheck = ComputerModule.Skillcheck
+            ComputerModule.Skillcheck = function(p1, p2, p3, p4)
+                local startTime = tick()
+                local okCall, resultOrErr = pcall(originalComputerSkillcheck, p1, p2, p3, p4)
+                local elapsed = tick() - startTime
+
+                if not okCall then
+                    warn(string.format("[Skillcheck] Computer original errored after %.3fs: %s", elapsed, tostring(resultOrErr)))
+                else
+                    print(string.format("[Skillcheck] Computer original finished in %.3fs, original returned: %s", elapsed, tostring(resultOrErr)))
+                end
+
+                print("[Skillcheck] Computer: Perfect!")
+                return "Perfect"
+            end
+        else
+            warn("[Skillcheck] ComputerModule.Skillcheck not found; creating fallback that returns 'Perfect'.")
+            ReplicatedStorage.Modules.SkillChecks.ComputerSkillCheck = ReplicatedStorage.Modules.SkillChecks.ComputerSkillCheck or {}
+            ReplicatedStorage.Modules.SkillChecks.ComputerSkillCheck.Skillcheck = function()
+                print("[Skillcheck] Computer fallback: Perfect!")
+                return "Perfect"
+            end
+        end
+    end
+
+    do
+        local ok, OilModule = safeRequire(ReplicatedStorage.Modules.SkillChecks.OilMachineSkillCheck)
+        if ok and type(OilModule) == "table" and type(OilModule.Start) == "function" then
+            originalOilStart = OilModule.Start
+            OilModule.Start = function(p1, p2, p3)
+                local startTime = tick()
+
+                if p2 ~= nil and type(p2) ~= "number" then
+                    warn("[Skillcheck] Oil Start received non-number p2; coercing to 0.")
+                    p2 = 0
+                end
+
+                local okCall, resultOrErr = pcall(originalOilStart, p1, p2, p3)
+                local elapsed = tick() - startTime
+
+                if not okCall then
+                    warn(string.format("[Skillcheck] Oil original errored after %.3fs: %s", elapsed, tostring(resultOrErr)))
+                else
+                    print(string.format("[Skillcheck] Oil original finished in %.3fs, original returned: %s", elapsed, tostring(resultOrErr)))
+                end
+
+                print("[Skillcheck] Oil Machine: Perfect!")
+                return "Perfect"
+            end
+        else
+            warn("[Skillcheck] OilModule.Start not found; creating fallback that returns 'Perfect'.")
+            ReplicatedStorage.Modules.SkillChecks.OilMachineSkillCheck = ReplicatedStorage.Modules.SkillChecks.OilMachineSkillCheck or {}
+            ReplicatedStorage.Modules.SkillChecks.OilMachineSkillCheck.Start = function()
+                print("[Skillcheck] Oil fallback: Perfect!")
+                return "Perfect"
+            end
+        end
+    end
+
+    patched = true
+    print("Skillcheck Loaded. All checks will now return 'Perfect'.")
+end
+
+local function removePatches()
+    if not patched then return end
+
+    local ok, ComputerModule = pcall(function() return ReplicatedStorage.Modules.SkillChecks.ComputerSkillCheck end)
+    if ok and type(ComputerModule) == "table" and originalComputerSkillcheck then
+        ComputerModule.Skillcheck = originalComputerSkillcheck
+        originalComputerSkillcheck = nil
+    end
+
+    local ok2, OilModule = pcall(function() return ReplicatedStorage.Modules.SkillChecks.OilMachineSkillCheck end)
+    if ok2 and type(OilModule) == "table" and originalOilStart then
+        OilModule.Start = originalOilStart
+        originalOilStart = nil
+    end
+
+    patched = false
+    print("Skillcheck patches removed. Originals restored where available.")
+end
+
+local Toggle = TabFarm:Toggle({
+    Title = "Instant auto skillcheck\Verificação automática instantânea de habilidades",
+    Desc = "Complete skillcheck without clicking\Conclua o teste de habilidade sem clicar",
+    Icon = "power",
+    Value = false,
+    Type = "Toggle",
+    Color = Color3.fromRGB(100, 200, 100),
+    Locked = false,
+    Flag = "instantskill_toggle",
+    Callback = function(state)
+        print("State changed:", state)
+        if state then
+            local ok, err = pcall(applyPatches)
+            if not ok then
+                warn("[Skillcheck] Failed to apply patches:", err)
+            end
+        else
+            local ok, err = pcall(removePatches)
+            if not ok then
+                warn("[Skillcheck] Failed to remove patches:", err)
+            end
+        end
+    end
+})
 
     -- SETTINGS TAB
     TabSettings:Slider({
