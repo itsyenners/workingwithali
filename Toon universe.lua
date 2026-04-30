@@ -50,28 +50,36 @@ local T = {
         esp_computers = "ESP Computers", esp_computers_desc = "Highlights all computers on the map",
         esp_monsters = "ESP Monsters", esp_monsters_desc = "Highlights all monsters on the map",
         esp_main = "ESP Main Machine", esp_main_desc = "Highlights the main machine on the map",
+        esp_players = "ESP Players", esp_players_desc = "Highlights all players on the map",
         walkspeed = "Walk Speed", walkspeed_desc = "Adjust your walking speed",
         stamina = "Infinite Stamina", stamina_desc = "Prevents stamina from draining",
         noclip = "Noclip", noclip_desc = "Walk through walls and objects",
+        fly = "Fly", fly_desc = "Enables flying",
+        fly_speed = "Fly Speed", fly_speed_desc = "Adjust your flying speed",
         farm_caps = "Pick Up All Capsules", farm_caps_desc = "Teleports to and collects all capsules",
         farm_items = "Pick Up All Items", farm_items_desc = "Teleports to and collects all items",
         farm_parts = "Pick Up All Parts", farm_parts_desc = "Teleports to and collects all parts",
+        auto_farm = "Auto Farm (BETA)", auto_farm_desc = "Automates machines, computers, main machine and elevator",
+        skillcheck_title = "Auto Skillcheck", skillcheck_desc = "Automatically completes skillchecks",
+        instant_skillcheck_title = "Instant Auto Skillcheck", instant_skillcheck_desc = "Complete skillcheck without clicking",
         tele_machine = "Teleport to Machine", tele_machine_desc = "Teleports to each oil machine",
         tele_computer = "Teleport to Computer", tele_computer_desc = "Teleports to each computer",
         tele_main = "Teleport to Main Machine", tele_main_desc = "Teleports to the main machine",
         tele_electric = "Teleport to Electric Box", tele_electric_desc = "Teleports to the electric box during blackouts",
         tele_elevator = "Auto Teleport to Elevator", tele_elevator_desc = "Teleports to elevator when the floor is complete",
+        tele_player = "Teleport to Player", tele_player_desc = "Teleports to a selected player",
+        tele_player_refresh = "Refresh Player List", tele_player_refresh_desc = "Refresh the list of players",
         auto_hide = "Auto Hide", auto_hide_desc = "Automatically hides when a monster chases you",
         esp_fill = "ESP Fill Transparency", esp_fill_desc = "Adjust the transparency of ESP highlights",
         esp_outline = "ESP Outline Transparency", esp_outline_desc = "Adjust the outline transparency of ESP highlights",
         esp_refresh = "ESP Refresh Rate", esp_refresh_desc = "How often ESP updates (in seconds)",
         farm_delay = "Farm Delay", farm_delay_desc = "Delay between collecting each item",
         language = "Language", language_desc = "Change the script language",
-        skillcheck_title = "Auto Skillcheck", skillcheck_desc = "Automatically completes computer skillchecks",
-        instant_skillcheck_title = "Instant Auto Skillcheck", instant_skillcheck_desc = "Complete skillcheck without clicking",
-        v102_title = "v1.0.2 (Current)", v102_desc = "Auto Skillcheck added (by Ali)\nInstant Auto Skillcheck added (by Ali)\nAnti-Void protection added (by Ali)\nBilingual toggle titles fixed",
-        v101_title = "v1.0.1", v101_desc = "Subtitle changed to: Thanks for using the script!\nDiscord hint added in Credits\nDiscord notification on startup\nLanguage option removed from Settings\nErrors now shown in console\nChangelog reformatted\nBy Myllo and Ali now only appears as a side tag\nSubtitle changed from: By Myllo and Ali",
-        v100_title = "v1.0.0", v100_desc = "Revamped UI\nAll tabs added\nPick Up All Parts\nTeleport to Electric Box\nAuto Hide (by Ali)\nInfinite Stamina (by Ali)\nFixed elevator barriers\nFixed Noclip\nBilingual EN/PT-BR",
+        v103_title = "v1.0.3 (Current)",
+        v103_desc = "Fly added (toggle + speed slider)\nAuto Farm BETA added\nESP Players added\nTeleport to Player added\nAuto Skillcheck fixed\nPT-BR subtitle bug fixed\nGodmode was not added (does not work)",
+        v102_title = "v1.0.2", v102_desc = "Auto Skillcheck added\nInstant Auto Skillcheck added\nAnti-Void protection added\nBilingual toggle titles fixed",
+        v101_title = "v1.0.1", v101_desc = "Subtitle changed\nDiscord hint added in Credits\nDiscord notification on startup\nLanguage option removed from Settings\nErrors now shown in console",
+        v100_title = "v1.0.0", v100_desc = "Revamped UI\nAll tabs added\nPick Up All Parts\nTeleport to Electric Box\nAuto Hide\nInfinite Stamina\nFixed elevator barriers\nFixed Noclip\nBilingual EN/PT-BR",
         v09_title = "v0.9", v09_desc = "Initial WindUI version\nESP, Farm, Teleport, Misc tabs",
         myllo_title = "mynameismyllo (Myllo)", myllo_desc = "Creator of Toon Universe's Script (Coder)",
         ali_title = "ali_hhjjj (Ali)", ali_desc = "Helper of Toon Universe Script and Creator of Dolly's Factory Script/TZ Hub",
@@ -80,7 +88,7 @@ local T = {
     },
     ["PT-BR"] = {
         title = "Toon Universe  |  Script de Farm",
-        author = "Thanks for using the script!",
+        author = "Obrigado por usar o script!",
         tab_main = "Principal", tab_player = "Jogador", tab_farm = "Farm",
         tab_teleport = "Teleporte", tab_settings = "Configuracoes",
         tab_changelog = "Changelog", tab_credits = "Creditos",
@@ -90,28 +98,36 @@ local T = {
         esp_computers = "ESP Computadores", esp_computers_desc = "Destaca todos os computadores no mapa",
         esp_monsters = "ESP Monstros", esp_monsters_desc = "Destaca todos os monstros no mapa",
         esp_main = "ESP Maquina Principal", esp_main_desc = "Destaca a maquina principal no mapa",
+        esp_players = "ESP Jogadores", esp_players_desc = "Destaca todos os jogadores no mapa",
         walkspeed = "Velocidade", walkspeed_desc = "Ajuste sua velocidade de caminhada",
         stamina = "Stamina Infinita", stamina_desc = "Impede que a stamina diminua",
         noclip = "Noclip", noclip_desc = "Atravesse paredes e objetos",
+        fly = "Voar", fly_desc = "Ativa o voo",
+        fly_speed = "Velocidade de Voo", fly_speed_desc = "Ajuste sua velocidade de voo",
         farm_caps = "Pegar Todas as Capsulas", farm_caps_desc = "Teleporta e coleta todas as capsulas",
         farm_items = "Pegar Todos os Itens", farm_items_desc = "Teleporta e coleta todos os itens",
         farm_parts = "Pegar Todas as Pecas", farm_parts_desc = "Teleporta e coleta todas as pecas",
+        auto_farm = "Auto Farm (BETA)", auto_farm_desc = "Automatiza maquinas, computadores, maquina principal e elevador",
+        skillcheck_title = "Verificacao automatica de habilidades", skillcheck_desc = "Completa automaticamente os testes de habilidade",
+        instant_skillcheck_title = "Verificacao automatica instantanea", instant_skillcheck_desc = "Conclua o teste de habilidade sem clicar",
         tele_machine = "Teleportar para Maquina", tele_machine_desc = "Teleporta para cada maquina",
         tele_computer = "Teleportar para Computador", tele_computer_desc = "Teleporta para cada computador",
         tele_main = "Teleportar para Maquina Principal", tele_main_desc = "Teleporta para a maquina principal",
         tele_electric = "Teleportar para Caixa Eletrica", tele_electric_desc = "Teleporta para a caixa eletrica durante apagoes",
         tele_elevator = "Teleporte Automatico para Elevador", tele_elevator_desc = "Teleporta para o elevador quando o andar e concluido",
+        tele_player = "Teleportar para Jogador", tele_player_desc = "Teleporta para um jogador selecionado",
+        tele_player_refresh = "Atualizar Lista de Jogadores", tele_player_refresh_desc = "Atualiza a lista de jogadores",
         auto_hide = "Esconder Automaticamente", auto_hide_desc = "Esconde automaticamente quando um monstro te persegue",
         esp_fill = "Transparencia de Preenchimento ESP", esp_fill_desc = "Ajuste a transparencia do preenchimento do ESP",
         esp_outline = "Transparencia do Contorno ESP", esp_outline_desc = "Ajuste a transparencia do contorno do ESP",
         esp_refresh = "Taxa de Atualizacao ESP", esp_refresh_desc = "Com que frequencia o ESP atualiza (em segundos)",
         farm_delay = "Delay do Farm", farm_delay_desc = "Delay entre coletar cada item",
         language = "Idioma", language_desc = "Mude o idioma do script",
-        skillcheck_title = "Verificacao automatica de habilidades", skillcheck_desc = "Completa automaticamente os testes de habilidade do computador",
-        instant_skillcheck_title = "Verificacao automatica instantanea", instant_skillcheck_desc = "Conclua o teste de habilidade sem clicar",
-        v102_title = "v1.0.2 (Atual)", v102_desc = "Verificacao automatica de habilidades adicionada (por Ali)\nVerificacao automatica instantanea adicionada (por Ali)\nProtecao Anti-Void adicionada (por Ali)\nTitulos bilíngues dos toggles corrigidos",
-        v101_title = "v1.0.1", v101_desc = "Subtitulo alterado para: Thanks for using the script!\nDica do Discord adicionada nos Creditos\nNotificacao do Discord ao iniciar\nOpcao de idioma removida das Configuracoes\nErros agora aparecem no console\nChangelog reformatado\nBy Myllo and Ali agora aparece apenas como tag lateral\nSubtitulo alterado de: By Myllo and Ali",
-        v100_title = "v1.0.0", v100_desc = "UI Reformulada\nTodas as abas\nPegar Todas as Pecas\nTeleporte Caixa Eletrica\nEsconder Automatico (Ali)\nStamina Infinita (Ali)\nElevador corrigido\nNoclip corrigido\nEN/PT-BR",
+        v103_title = "v1.0.3 (Atual)",
+        v103_desc = "Fly adicionado (toggle + slider de velocidade)\nAuto Farm BETA adicionado\nESP Jogadores adicionado\nTeleporte para Jogador adicionado\nAuto Skillcheck corrigido\nBug do subtitulo PT-BR corrigido\nGodmode nao foi adicionado (nao funciona)",
+        v102_title = "v1.0.2", v102_desc = "Verificacao automatica de habilidades adicionada\nVerificacao automatica instantanea adicionada\nProtecao Anti-Void adicionada\nTitulos bilíngues dos toggles corrigidos",
+        v101_title = "v1.0.1", v101_desc = "Subtitulo alterado\nDica do Discord adicionada nos Creditos\nNotificacao do Discord ao iniciar\nOpcao de idioma removida das Configuracoes\nErros agora aparecem no console",
+        v100_title = "v1.0.0", v100_desc = "UI Reformulada\nTodas as abas\nPegar Todas as Pecas\nTeleporte Caixa Eletrica\nEsconder Automatico\nStamina Infinita\nElevador corrigido\nNoclip corrigido\nEN/PT-BR",
         v09_title = "v0.9", v09_desc = "Versao inicial WindUI\nAbas ESP, Farm, Teleporte, Misc",
         myllo_title = "mynameismyllo (Myllo)", myllo_desc = "Criador do Script do Toon Universe (Programador)",
         ali_title = "ali_hhjjj (Ali)", ali_desc = "Ajudante do Script do Toon Universe e Criador do Script do Dollys Factory",
@@ -128,6 +144,7 @@ local player = game.Players.LocalPlayer
 local char = player.Character or player.CharacterAdded:Wait()
 local root = char:FindFirstChild("HumanoidRootPart")
 local speedValue = 16
+local flySpeedValue = 50
 
 player.CharacterAdded:Connect(function(c)
     char = c
@@ -203,26 +220,31 @@ local function createWindow()
     local TabChangelog = Window:Tab({ Title = tr("tab_changelog"), Icon = "clock",    IconColor = Orange, IconShape = "Square", Border = true })
     local TabCredits   = Window:Tab({ Title = tr("tab_credits"),   Icon = "star",     IconColor = Yellow, IconShape = "Square", Border = true })
 
-    -- MAIN TAB
-    local espCaps, espItens, espMaq, espComp, espMons, espBig = false, false, false, false, false, false
+    -- ============================================================
+    -- MAIN TAB (ESP)
+    -- ============================================================
+    local espCaps, espItens, espMaq, espComp, espMons, espBig, espPlayers = false, false, false, false, false, false, false
 
     TabMain:Toggle({ Title = tr("esp_caps"),      Desc = tr("esp_caps_desc"),      Value = false, Flag = "ESPCaps",
-        Callback = function(val) espCaps  = val if not val then clearTag("ESP_Caps")  end end })
+        Callback = function(val) espCaps    = val if not val then clearTag("ESP_Caps")    end end })
     TabMain:Space()
     TabMain:Toggle({ Title = tr("esp_items"),     Desc = tr("esp_items_desc"),     Value = false, Flag = "ESPItens",
-        Callback = function(val) espItens = val if not val then clearTag("ESP_Itens") end end })
+        Callback = function(val) espItens   = val if not val then clearTag("ESP_Itens")   end end })
     TabMain:Space()
     TabMain:Toggle({ Title = tr("esp_machines"),  Desc = tr("esp_machines_desc"),  Value = false, Flag = "ESPMaq",
-        Callback = function(val) espMaq   = val if not val then clearTag("ESP_Maq")   end end })
+        Callback = function(val) espMaq     = val if not val then clearTag("ESP_Maq")     end end })
     TabMain:Space()
     TabMain:Toggle({ Title = tr("esp_computers"), Desc = tr("esp_computers_desc"), Value = false, Flag = "ESPComp",
-        Callback = function(val) espComp  = val if not val then clearTag("ESP_Comp")  end end })
+        Callback = function(val) espComp    = val if not val then clearTag("ESP_Comp")    end end })
     TabMain:Space()
     TabMain:Toggle({ Title = tr("esp_monsters"),  Desc = tr("esp_monsters_desc"),  Value = false, Flag = "ESPMons",
-        Callback = function(val) espMons  = val if not val then clearTag("ESP_Mons")  end end })
+        Callback = function(val) espMons    = val if not val then clearTag("ESP_Mons")    end end })
     TabMain:Space()
     TabMain:Toggle({ Title = tr("esp_main"),      Desc = tr("esp_main_desc"),      Value = false, Flag = "ESPBig",
-        Callback = function(val) espBig   = val if not val then clearTag("ESP_Big")   end end })
+        Callback = function(val) espBig     = val if not val then clearTag("ESP_Big")     end end })
+    TabMain:Space()
+    TabMain:Toggle({ Title = tr("esp_players"),   Desc = tr("esp_players_desc"),   Value = false, Flag = "ESPPlayers",
+        Callback = function(val) espPlayers = val if not val then clearTag("ESP_Players") end end })
 
     local monstersSemRoot = { "TSquid", "TDiscardd", "TNimbus" }
 
@@ -275,12 +297,21 @@ local function createWindow()
                 local ok2, big = pcall(function() return workspace.Map.SpecialFolder.BigMachine.Computer end)
                 if not ok2 then ok2, big = pcall(function() return workspace.Map.SpecialFolder.BigMachine.Machine end) end
                 if ok2 and big then createHighlight(big, Color3.fromRGB(255, 0, 255), "ESP_Big")
-                elseif not ok2 then warn("[ToonUniverse] ESP Main Machine: nao foi possivel encontrar a maquina principal") end
+                elseif not ok2 then warn("[ToonUniverse] ESP Main Machine: could not find main machine") end
+            end
+            if espPlayers then
+                for _, p in ipairs(game.Players:GetPlayers()) do
+                    if p ~= player and p.Character then
+                        createHighlight(p.Character, Color3.fromRGB(0, 200, 255), "ESP_Players")
+                    end
+                end
             end
         end
     end)
 
+    -- ============================================================
     -- PLAYER TAB
+    -- ============================================================
     TabPlayer:Slider({
         Title = tr("walkspeed"), Desc = tr("walkspeed_desc"), Flag = "Speed", Step = 1,
         Value = { Min = 16, Max = 150, Default = 16 },
@@ -323,8 +354,72 @@ local function createWindow()
             end
         end
     end)
+    TabPlayer:Space()
 
+    -- FLY
+    local flyActive = false
+    local flyConn = nil
+    local flyBodyVel = nil
+    local flyBodyGyro = nil
+
+    local function startFly()
+        if not char or not root then return end
+        local hum = char:FindFirstChildOfClass("Humanoid")
+        if hum then hum.PlatformStand = true end
+
+        flyBodyVel = Instance.new("BodyVelocity")
+        flyBodyVel.Velocity = Vector3.new(0, 0, 0)
+        flyBodyVel.MaxForce = Vector3.new(1e5, 1e5, 1e5)
+        flyBodyVel.Parent = root
+
+        flyBodyGyro = Instance.new("BodyGyro")
+        flyBodyGyro.MaxTorque = Vector3.new(1e5, 1e5, 1e5)
+        flyBodyGyro.P = 1e4
+        flyBodyGyro.Parent = root
+
+        local cam = workspace.CurrentCamera
+        flyConn = RunService.RenderStepped:Connect(function()
+            if not flyActive or not root then return end
+            flyBodyGyro.CFrame = cam.CFrame
+            local moveDir = Vector3.new(0, 0, 0)
+            local UIS = game:GetService("UserInputService")
+            if UIS:IsKeyDown(Enum.KeyCode.W) then moveDir = moveDir + cam.CFrame.LookVector end
+            if UIS:IsKeyDown(Enum.KeyCode.S) then moveDir = moveDir - cam.CFrame.LookVector end
+            if UIS:IsKeyDown(Enum.KeyCode.A) then moveDir = moveDir - cam.CFrame.RightVector end
+            if UIS:IsKeyDown(Enum.KeyCode.D) then moveDir = moveDir + cam.CFrame.RightVector end
+            if UIS:IsKeyDown(Enum.KeyCode.Space) then moveDir = moveDir + Vector3.new(0, 1, 0) end
+            if UIS:IsKeyDown(Enum.KeyCode.LeftShift) then moveDir = moveDir - Vector3.new(0, 1, 0) end
+            flyBodyVel.Velocity = moveDir.Magnitude > 0 and moveDir.Unit * flySpeedValue or Vector3.new(0, 0, 0)
+        end)
+    end
+
+    local function stopFly()
+        if flyConn then flyConn:Disconnect() flyConn = nil end
+        if flyBodyVel then flyBodyVel:Destroy() flyBodyVel = nil end
+        if flyBodyGyro then flyBodyGyro:Destroy() flyBodyGyro = nil end
+        if char then
+            local hum = char:FindFirstChildOfClass("Humanoid")
+            if hum then hum.PlatformStand = false end
+        end
+    end
+
+    TabPlayer:Toggle({
+        Title = tr("fly"), Desc = tr("fly_desc"), Value = false, Flag = "Fly", Icon = "navigation",
+        Callback = function(val)
+            flyActive = val
+            if val then startFly() else stopFly() end
+        end,
+    })
+    TabPlayer:Space()
+    TabPlayer:Slider({
+        Title = tr("fly_speed"), Desc = tr("fly_speed_desc"), Flag = "FlySpeed", Step = 5,
+        Value = { Min = 10, Max = 200, Default = 50 },
+        Callback = function(val) flySpeedValue = val end,
+    })
+
+    -- ============================================================
     -- FARM TAB
+    -- ============================================================
     local farmCapsulesActive = false
     TabFarm:Toggle({
         Title = tr("farm_caps"), Desc = tr("farm_caps_desc"), Value = false, Flag = "FarmCaps",
@@ -398,8 +493,233 @@ local function createWindow()
             end)
         end,
     })
+    TabFarm:Space()
 
+    -- AUTO FARM BETA
+    local autoFarmActive = false
+    local autoFarmMapStats, autoFarmFloor, autoFarmElev
+
+    task.spawn(function()
+        autoFarmMapStats = workspace:WaitForChild("MapStats", 30)
+        if autoFarmMapStats then
+            autoFarmFloor = autoFarmMapStats:WaitForChild("IsFloorCompleted", 30)
+        end
+        autoFarmElev = workspace:WaitForChild("Elevator", 30)
+    end)
+
+    local function autoFarmTeleportElev()
+        if not autoFarmElev then return end
+        local part = autoFarmElev.PrimaryPart or autoFarmElev:FindFirstChildWhichIsA("BasePart")
+        if part and root then
+            root.CFrame = part.CFrame + Vector3.new(0, 3, 0)
+        end
+        local barrier = autoFarmElev:FindFirstChild("Barrier")
+        local safety = workspace:FindFirstChild("SafteyBarrier")
+        if barrier then barrier.CanCollide = false end
+        if safety then safety.CanCollide = false end
+    end
+
+    TabFarm:Toggle({
+        Title = tr("auto_farm"), Desc = tr("auto_farm_desc"), Value = false, Flag = "AutoFarm", Icon = "cpu",
+        Callback = function(val)
+            autoFarmActive = val
+            task.spawn(function()
+                while autoFarmActive do
+                    -- Capsules
+                    for _, model in ipairs(workspace.Capsules:GetChildren()) do
+                        if not autoFarmActive then break end
+                        local r = model:FindFirstChild("Root")
+                        local prompt = model:FindFirstChildWhichIsA("ProximityPrompt", true)
+                        if r and prompt and root then
+                            root.CFrame = r.CFrame + Vector3.new(0, 3, 0)
+                            task.wait(farmDelayValue)
+                            fireproximityprompt(prompt)
+                            task.wait(farmDelayValue)
+                        end
+                    end
+                    -- Machines
+                    for _, machine in ipairs(workspace.OilMachines:GetChildren()) do
+                        if not autoFarmActive then break end
+                        local prompt = machine:FindFirstChild("PromptPart")
+                        if prompt and root then
+                            root.CFrame = prompt.CFrame + Vector3.new(0, 3, 0)
+                            task.wait(3)
+                        end
+                    end
+                    -- Computers
+                    for _, comp in ipairs(workspace.Computers:GetChildren()) do
+                        if not autoFarmActive then break end
+                        local prompt = comp:FindFirstChild("PromptPart")
+                        if prompt and root then
+                            root.CFrame = prompt.CFrame + Vector3.new(0, 3, 0)
+                            task.wait(3)
+                        end
+                    end
+                    -- Main Machine
+                    local ok2, prompt = pcall(function() return workspace.Map.SpecialFolder.BigMachine.Computer.PromptPart end)
+                    if not ok2 then ok2, prompt = pcall(function() return workspace.Map.SpecialFolder.BigMachine.Machine.PromptPart end) end
+                    if ok2 and prompt and root then
+                        root.CFrame = prompt.CFrame + Vector3.new(0, 3, 0)
+                        task.wait(3)
+                    end
+                    -- Wait for floor complete then go elevator
+                    if autoFarmFloor then
+                        local waited = 0
+                        while autoFarmActive and not autoFarmFloor.Value and waited < 60 do
+                            task.wait(1)
+                            waited = waited + 1
+                        end
+                        if autoFarmFloor.Value then
+                            autoFarmTeleportElev()
+                            task.wait(5)
+                        end
+                    end
+                    task.wait(1)
+                end
+            end)
+        end,
+    })
+    TabFarm:Space()
+
+    -- SKILLCHECK
+    local AutoSkillcheck = false
+
+    local function FireConnections(signal)
+        local ok, conns = pcall(getconnections, signal)
+        if ok then
+            for _, c in conns do
+                pcall(function() c:Fire() end)
+            end
+        end
+    end
+
+    local function NormRot(r)
+        return (r + 180) % 360 - 180
+    end
+
+    TabFarm:Toggle({
+        Title = tr("skillcheck_title"), Desc = tr("skillcheck_desc"),
+        Icon = "cpu", Value = false, Flag = "auto_skillcheck",
+        Callback = function(state) AutoSkillcheck = state end,
+    })
+
+    task.spawn(function()
+        local RoundSkillcheck = player.PlayerGui:WaitForChild("RoundSkillcheck", 15)
+        if not RoundSkillcheck then return end
+        local Container = RoundSkillcheck:WaitForChild("Container")
+        local Normal = Container:WaitForChild("Normal")
+        local AimImage = Normal:WaitForChild("AimImage")
+        local Target = Normal:WaitForChild("Target")
+        local HitBtn = Normal:WaitForChild("Hit")
+        local fired, lastV7, lastVisible = false, nil, false
+        RunService.Heartbeat:Connect(function()
+            if not AutoSkillcheck then return end
+            local visible = Normal.Visible
+            if visible ~= lastVisible then
+                if visible then fired = false lastV7 = nil end
+                lastVisible = visible
+            end
+            if not visible or fired then return end
+            local aim = NormRot(AimImage.Rotation + 180)
+            local zoneStart = NormRot(Target.Rotation - 30)
+            local v7 = math.abs(((aim - zoneStart) + 180) % 360 - 180) / 60
+            if lastV7 ~= nil and lastV7 < 0.5 and v7 >= 0.5 then
+                fired = true
+                FireConnections(HitBtn.MouseButton1Down)
+            end
+            lastV7 = v7
+        end)
+    end)
+
+    task.spawn(function()
+        local LockUI = player.PlayerGui:WaitForChild("LockUI", 15)
+        if not LockUI then return end
+        local HUD = LockUI:WaitForChild("HUD")
+        local Skillcheck = HUD:WaitForChild("Skillcheck")
+        local Main = Skillcheck:WaitForChild("Main")
+        local Marker = Main:WaitForChild("Marker")
+        local Objective = Main:WaitForChild("Objective")
+        local MobileBtn = Main:WaitForChild("MobileButtonClick")
+        local fired, lastDist, lastVisible = false, nil, false
+        RunService.Heartbeat:Connect(function()
+            if not AutoSkillcheck then return end
+            local visible = Marker.Visible
+            if visible ~= lastVisible then
+                if visible then fired = false lastDist = nil end
+                lastVisible = visible
+            end
+            if not visible or fired then return end
+            local mCenter = Marker.AbsolutePosition.X + Marker.AbsoluteSize.X * 0.5
+            local oCenter = Objective.AbsolutePosition.X + Objective.AbsoluteSize.X * 0.5
+            local dist = mCenter - oCenter
+            if lastDist ~= nil and lastDist < 0 and dist >= 0 then
+                fired = true
+                FireConnections(MobileBtn.MouseButton1Down)
+            end
+            lastDist = dist
+        end)
+    end)
+
+    TabFarm:Space()
+
+    local originalComputerSkillcheck, originalOilStart, patched = nil, nil, false
+
+    local function safeRequire(path)
+        local ok, mod = pcall(function() return require(path) end)
+        if not ok then warn("[Skillcheck] require failed:", mod) return false, nil end
+        return true, mod
+    end
+
+    local function applyPatches()
+        if patched then return end
+        local ok, ComputerModule = safeRequire(ReplicatedStorage.Modules.SkillChecks.ComputerSkillCheck)
+        if ok and type(ComputerModule) == "table" and type(ComputerModule.Skillcheck) == "function" then
+            originalComputerSkillcheck = ComputerModule.Skillcheck
+            ComputerModule.Skillcheck = function(p1, p2, p3, p4)
+                pcall(originalComputerSkillcheck, p1, p2, p3, p4)
+                return "Perfect"
+            end
+        end
+        local ok2, OilModule = safeRequire(ReplicatedStorage.Modules.SkillChecks.OilMachineSkillCheck)
+        if ok2 and type(OilModule) == "table" and type(OilModule.Start) == "function" then
+            originalOilStart = OilModule.Start
+            OilModule.Start = function(p1, p2, p3)
+                if p2 ~= nil and type(p2) ~= "number" then p2 = 0 end
+                pcall(originalOilStart, p1, p2, p3)
+                return "Perfect"
+            end
+        end
+        patched = true
+        print("[ToonUniverse] Instant Skillcheck: active.")
+    end
+
+    local function removePatches()
+        if not patched then return end
+        local ok, ComputerModule = pcall(function() return ReplicatedStorage.Modules.SkillChecks.ComputerSkillCheck end)
+        if ok and originalComputerSkillcheck then ComputerModule.Skillcheck = originalComputerSkillcheck originalComputerSkillcheck = nil end
+        local ok2, OilModule = pcall(function() return ReplicatedStorage.Modules.SkillChecks.OilMachineSkillCheck end)
+        if ok2 and originalOilStart then OilModule.Start = originalOilStart originalOilStart = nil end
+        patched = false
+        print("[ToonUniverse] Instant Skillcheck: removed.")
+    end
+
+    TabFarm:Toggle({
+        Title = tr("instant_skillcheck_title"), Desc = tr("instant_skillcheck_desc"),
+        Icon = "power", Value = false, Flag = "instantskill_toggle",
+        Callback = function(state)
+            if state then
+                local ok, err = pcall(applyPatches)
+                if not ok then warn("[ToonUniverse] Instant Skillcheck error:", err) end
+            else
+                local ok, err = pcall(removePatches)
+                if not ok then warn("[ToonUniverse] Instant Skillcheck remove error:", err) end
+            end
+        end,
+    })
+
+    -- ============================================================
     -- TELEPORT TAB
+    -- ============================================================
     TabTele:Button({
         Title = tr("tele_machine"), Desc = tr("tele_machine_desc"), Icon = "cpu", Justify = "Center",
         Callback = function()
@@ -432,7 +752,7 @@ local function createWindow()
             local ok2, prompt = pcall(function() return workspace.Map.SpecialFolder.BigMachine.Computer.PromptPart end)
             if not ok2 then ok2, prompt = pcall(function() return workspace.Map.SpecialFolder.BigMachine.Machine.PromptPart end) end
             if ok2 and prompt and root then root.CFrame = prompt.CFrame + Vector3.new(0, 3, 0)
-            elseif not ok2 then warn("[ToonUniverse] Teleport Main Machine: nao foi possivel encontrar o PromptPart") end
+            elseif not ok2 then warn("[ToonUniverse] Teleport Main Machine: could not find PromptPart") end
         end,
     })
     TabTele:Space()
@@ -441,11 +761,12 @@ local function createWindow()
         Callback = function()
             local ok2, prompt = pcall(function() return workspace.Map.SpecialFolder.ElectricBoxes.ElectricBox.PromptPart end)
             if ok2 and prompt and root then root.CFrame = prompt.CFrame + Vector3.new(0, 3, 0)
-            elseif not ok2 then warn("[ToonUniverse] Teleport Electric Box: nao foi possivel encontrar o PromptPart") end
+            elseif not ok2 then warn("[ToonUniverse] Teleport Electric Box: could not find PromptPart") end
         end,
     })
     TabTele:Space()
 
+    -- AUTO ELEVATOR
     local MapStats, FloorValue, Elevator
     local elevRunning, elevEnabled = false, false
     local elevConnection
@@ -513,6 +834,7 @@ local function createWindow()
     })
     TabTele:Space()
 
+    -- AUTO HIDE
     local teleportEnabled = false
     local TeleportPart = nil
 
@@ -525,7 +847,7 @@ local function createWindow()
     end)
 
     local ok3, ChaseRemote = pcall(function() return ReplicatedStorage.Remotes.Chase end)
-    if not ok3 then warn("[ToonUniverse] Auto Hide: nao foi possivel encontrar o Chase remote - " .. tostring(ChaseRemote)) end
+    if not ok3 then warn("[ToonUniverse] Auto Hide: could not find Chase remote - " .. tostring(ChaseRemote)) end
     if ok3 and ChaseRemote then
         local function loopHide()
             if not teleportEnabled then return end
@@ -550,146 +872,63 @@ local function createWindow()
         Title = tr("auto_hide"), Desc = tr("auto_hide_desc"), Icon = "shield", Value = false, Flag = "AutoHide",
         Callback = function(state) teleportEnabled = state end,
     })
+    TabTele:Space()
 
+    -- TELEPORT TO PLAYER
+    local playerList = {}
 
-    -- SKILLCHECK
-    local AutoSkillcheck = false
-
-    local function FireConnections(signal)
-        local ok, conns = pcall(getconnections, signal)
-        if ok then
-            for _, c in conns do
-                pcall(function() c:Fire() end)
+    local function getPlayerNames()
+        local names = {}
+        for _, p in ipairs(game.Players:GetPlayers()) do
+            if p ~= player then
+                table.insert(names, p.Name)
             end
         end
+        return names
     end
 
-    local function NormRot(r)
-        return (r + 180) % 360 - 180
+    playerList = getPlayerNames()
+
+    local selectedPlayer = playerList[1] or ""
+
+    if #playerList > 0 then
+        TabTele:Dropdown({
+            Title = tr("tele_player"),
+            Desc = tr("tele_player_desc"),
+            Flag = "TelePlayer",
+            Value = selectedPlayer,
+            Values = playerList,
+            Callback = function(val)
+                selectedPlayer = val
+                local target = game.Players:FindFirstChild(val)
+                if target and target.Character and root then
+                    local hrp = target.Character:FindFirstChild("HumanoidRootPart")
+                    if hrp then
+                        root.CFrame = hrp.CFrame + Vector3.new(3, 0, 0)
+                    end
+                end
+            end,
+        })
+        TabTele:Space()
     end
 
-    TabFarm:Space()
-    TabFarm:Toggle({
-        Title = tr("skillcheck_title"), Desc = tr("skillcheck_desc"),
-        Icon = "cpu", Value = false, Flag = "auto_skillcheck",
-        Callback = function(state) AutoSkillcheck = state end,
-    })
-
-    task.spawn(function()
-        local RoundSkillcheck = game.Players.LocalPlayer.PlayerGui:WaitForChild("RoundSkillcheck", 15)
-        if not RoundSkillcheck then return end
-        local Container = RoundSkillcheck:WaitForChild("Container")
-        local Normal = Container:WaitForChild("Normal")
-        local AimImage = Normal:WaitForChild("AimImage")
-        local Target = Normal:WaitForChild("Target")
-        local HitBtn = Normal:WaitForChild("Hit")
-        local fired, lastV7, lastVisible = false, nil, false
-        RunService.Heartbeat:Connect(function()
-            if not AutoSkillcheck then return end
-            local visible = Normal.Visible
-            if visible ~= lastVisible then
-                if visible then fired = false lastV7 = nil end
-                lastVisible = visible
-            end
-            if not visible or fired then return end
-            local aim = NormRot(AimImage.Rotation + 180)
-            local zoneStart = NormRot(Target.Rotation - 30)
-            local v7 = math.abs(((aim - zoneStart) + 180) % 360 - 180) / 60
-            if lastV7 ~= nil and lastV7 < 0.5 and v7 >= 0.5 then
-                fired = true
-                FireConnections(HitBtn.MouseButton1Down)
-            end
-            lastV7 = v7
-        end)
-    end)
-
-    task.spawn(function()
-        local LockUI = game.Players.LocalPlayer.PlayerGui:WaitForChild("LockUI", 15)
-        if not LockUI then return end
-        local HUD = LockUI:WaitForChild("HUD")
-        local Skillcheck = HUD:WaitForChild("Skillcheck")
-        local Main = Skillcheck:WaitForChild("Main")
-        local Marker = Main:WaitForChild("Marker")
-        local Objective = Main:WaitForChild("Objective")
-        local MobileBtn = Main:WaitForChild("MobileButtonClick")
-        local fired, lastDist, lastVisible = false, nil, false
-        RunService.Heartbeat:Connect(function()
-            if not AutoSkillcheck then return end
-            local visible = Marker.Visible
-            if visible ~= lastVisible then
-                if visible then fired = false lastDist = nil end
-                lastVisible = visible
-            end
-            if not visible or fired then return end
-            local mCenter = Marker.AbsolutePosition.X + Marker.AbsoluteSize.X * 0.5
-            local oCenter = Objective.AbsolutePosition.X + Objective.AbsoluteSize.X * 0.5
-            local dist = mCenter - oCenter
-            if lastDist ~= nil and lastDist < 0 and dist >= 0 then
-                fired = true
-                FireConnections(MobileBtn.MouseButton1Down)
-            end
-            lastDist = dist
-        end)
-    end)
-
-    -- INSTANT SKILLCHECK
-    local originalComputerSkillcheck, originalOilStart, patched = nil, nil, false
-
-    local function safeRequire(path)
-        local ok, mod = pcall(function() return require(path) end)
-        if not ok then warn("[Skillcheck] require failed:", mod) return false, nil end
-        return true, mod
-    end
-
-    local function applyPatches()
-        if patched then return end
-        local ok, ComputerModule = safeRequire(ReplicatedStorage.Modules.SkillChecks.ComputerSkillCheck)
-        if ok and type(ComputerModule) == "table" and type(ComputerModule.Skillcheck) == "function" then
-            originalComputerSkillcheck = ComputerModule.Skillcheck
-            ComputerModule.Skillcheck = function(p1, p2, p3, p4)
-                pcall(originalComputerSkillcheck, p1, p2, p3, p4)
-                return "Perfect"
-            end
-        end
-        local ok2, OilModule = safeRequire(ReplicatedStorage.Modules.SkillChecks.OilMachineSkillCheck)
-        if ok2 and type(OilModule) == "table" and type(OilModule.Start) == "function" then
-            originalOilStart = OilModule.Start
-            OilModule.Start = function(p1, p2, p3)
-                if p2 ~= nil and type(p2) ~= "number" then p2 = 0 end
-                pcall(originalOilStart, p1, p2, p3)
-                return "Perfect"
-            end
-        end
-        patched = true
-        print("[ToonUniverse] Instant Skillcheck: active.")
-    end
-
-    local function removePatches()
-        if not patched then return end
-        local ok, ComputerModule = pcall(function() return ReplicatedStorage.Modules.SkillChecks.ComputerSkillCheck end)
-        if ok and originalComputerSkillcheck then ComputerModule.Skillcheck = originalComputerSkillcheck originalComputerSkillcheck = nil end
-        local ok2, OilModule = pcall(function() return ReplicatedStorage.Modules.SkillChecks.OilMachineSkillCheck end)
-        if ok2 and originalOilStart then OilModule.Start = originalOilStart originalOilStart = nil end
-        patched = false
-        print("[ToonUniverse] Instant Skillcheck: removed.")
-    end
-
-    TabFarm:Space()
-    TabFarm:Toggle({
-        Title = tr("instant_skillcheck_title"), Desc = tr("instant_skillcheck_desc"),
-        Icon = "power", Value = false, Flag = "instantskill_toggle",
-        Callback = function(state)
-            if state then
-                local ok, err = pcall(applyPatches)
-                if not ok then warn("[ToonUniverse] Instant Skillcheck error:", err) end
-            else
-                local ok, err = pcall(removePatches)
-                if not ok then warn("[ToonUniverse] Instant Skillcheck remove error:", err) end
-            end
+    TabTele:Button({
+        Title = tr("tele_player_refresh"), Desc = tr("tele_player_refresh_desc"),
+        Icon = "refresh-cw", Justify = "Center",
+        Callback = function()
+            local names = getPlayerNames()
+            WindUI:Notify({
+                Title = lang == "EN" and "Player List" or "Lista de Jogadores",
+                Content = #names > 0 and table.concat(names, ", ") or (lang == "EN" and "No other players found." or "Nenhum outro jogador encontrado."),
+                Icon = "users",
+                Duration = 5,
+            })
         end,
     })
 
+    -- ============================================================
     -- SETTINGS TAB
+    -- ============================================================
     TabSettings:Slider({
         Title = tr("esp_fill"), Desc = tr("esp_fill_desc"), Flag = "ESPFill", Step = 0.1,
         Value = { Min = 0, Max = 1, Default = 0.5 },
@@ -714,8 +953,11 @@ local function createWindow()
         Callback = function(val) farmDelayValue = val end,
     })
 
-
+    -- ============================================================
     -- CHANGELOG TAB
+    -- ============================================================
+    addText(TabChangelog, tr("v103_title"), tr("v103_desc"))
+    TabChangelog:Space()
     addText(TabChangelog, tr("v102_title"), tr("v102_desc"))
     TabChangelog:Space()
     addText(TabChangelog, tr("v101_title"), tr("v101_desc"))
@@ -724,7 +966,9 @@ local function createWindow()
     TabChangelog:Space()
     addText(TabChangelog, tr("v09_title"), tr("v09_desc"))
 
+    -- ============================================================
     -- CREDITS TAB
+    -- ============================================================
     addText(TabCredits, tr("myllo_title"), tr("myllo_desc"))
     TabCredits:Space()
     addText(TabCredits, tr("ali_title"), tr("ali_desc"))
@@ -749,7 +993,7 @@ local function createWindow()
     TabCredits:Space()
     addText(TabCredits, tr("windui_title"), tr("windui_desc"))
 
-    print("Toon Universe | v1.0.2 | " .. lang .. " | loaded!")
+    print("Toon Universe | v1.0.3 | " .. lang .. " | loaded!")
 end
 
 WindUI:Popup({
@@ -764,7 +1008,7 @@ WindUI:Popup({
                 if not ok then warn("WindUI Error: " .. tostring(err)) end
                 WindUI:Notify({
                     Title = "Welcome!",
-                    Content = "Don't forget to join the Discord server in the Credits! The script has updated, check the Changelog!",
+                    Content = "Don't forget to join the Discord server in the Credits! The script has updated to v1.0.3, check the Changelog!",
                     Icon = "message-circle",
                     Duration = 6,
                 })
@@ -778,7 +1022,7 @@ WindUI:Popup({
                 if not ok then warn("WindUI Error: " .. tostring(err)) end
                 WindUI:Notify({
                     Title = "Bem-vindo!",
-                    Content = "Nao esqueca de entrar no servidor do Discord nos Creditos! O script foi atualizado, veja o Changelog!",
+                    Content = "Nao esqueca de entrar no servidor do Discord nos Creditos! O script foi atualizado para v1.0.3, veja o Changelog!",
                     Icon = "message-circle",
                     Duration = 6,
                 })
