@@ -75,8 +75,9 @@ local T = {
         esp_refresh = "ESP Refresh Rate", esp_refresh_desc = "How often ESP updates (in seconds)",
         farm_delay = "Farm Delay", farm_delay_desc = "Delay between collecting each item",
         language = "Language", language_desc = "Change the script language",
-        v103_title = "v1.0.3 (Current)",
-        v103_desc = "Fly added (toggle + speed slider)\nAuto Farm BETA added\nESP Players added\nTeleport to Player added\nAuto Skillcheck fixed\nPT-BR subtitle bug fixed\nGodmode was not added (does not work)",
+        v103b_title = "v1.0.3Fix",
+        v103b_desc = "Fixed fly\nDiscord link updated",
+        v103_title = "v1.0.3", v103_desc = "Fly added (toggle + speed slider)\nAuto Farm BETA added\nESP Players added\nTeleport to Player added\nAuto Skillcheck fixed\nPT-BR subtitle bug fixed\nGodmode was not added (does not work)",
         v102_title = "v1.0.2", v102_desc = "Auto Skillcheck added\nInstant Auto Skillcheck added\nAnti-Void protection added\nBilingual toggle titles fixed",
         v101_title = "v1.0.1", v101_desc = "Subtitle changed\nDiscord hint added in Credits\nDiscord notification on startup\nLanguage option removed from Settings\nErrors now shown in console",
         v100_title = "v1.0.0", v100_desc = "Revamped UI\nAll tabs added\nPick Up All Parts\nTeleport to Electric Box\nAuto Hide\nInfinite Stamina\nFixed elevator barriers\nFixed Noclip\nBilingual EN/PT-BR",
@@ -84,7 +85,7 @@ local T = {
         myllo_title = "mynameismyllo (Myllo)", myllo_desc = "Creator of Toon Universe's Script (Coder)",
         ali_title = "ali_hhjjj (Ali)", ali_desc = "Helper of Toon Universe Script and Creator of Dolly's Factory Script/TZ Hub",
         windui_title = "WindUI", windui_desc = "UI Library by Footagesus",
-        discord_hint = "For questions and bugs, join Ali's server and ping @mynameismyllo",
+        discord_hint = "For questions and bugs, join The Toon Bunker and ping @mynameismyllo",
     },
     ["PT-BR"] = {
         title = "Toon Universe  |  Script de Farm",
@@ -123,8 +124,9 @@ local T = {
         esp_refresh = "Taxa de Atualizacao ESP", esp_refresh_desc = "Com que frequencia o ESP atualiza (em segundos)",
         farm_delay = "Delay do Farm", farm_delay_desc = "Delay entre coletar cada item",
         language = "Idioma", language_desc = "Mude o idioma do script",
-        v103_title = "v1.0.3 (Atual)",
-        v103_desc = "Fly adicionado (toggle + slider de velocidade)\nAuto Farm BETA adicionado\nESP Jogadores adicionado\nTeleporte para Jogador adicionado\nAuto Skillcheck corrigido\nBug do subtitulo PT-BR corrigido\nGodmode nao foi adicionado (nao funciona)",
+        v103b_title = "v1.0.3b (Atual)",
+        v103b_desc = "Fly corrigido\nLink do discord atualizado",
+        v103_title = "v1.0.3", v103_desc = "Fly adicionado (toggle + slider de velocidade)\nAuto Farm BETA adicionado\nESP Jogadores adicionado\nTeleporte para Jogador adicionado\nAuto Skillcheck corrigido\nBug do subtitulo PT-BR corrigido\nGodmode nao foi adicionado (nao funciona)",
         v102_title = "v1.0.2", v102_desc = "Verificacao automatica de habilidades adicionada\nVerificacao automatica instantanea adicionada\nProtecao Anti-Void adicionada\nTitulos bilíngues dos toggles corrigidos",
         v101_title = "v1.0.1", v101_desc = "Subtitulo alterado\nDica do Discord adicionada nos Creditos\nNotificacao do Discord ao iniciar\nOpcao de idioma removida das Configuracoes\nErros agora aparecem no console",
         v100_title = "v1.0.0", v100_desc = "UI Reformulada\nTodas as abas\nPegar Todas as Pecas\nTeleporte Caixa Eletrica\nEsconder Automatico\nStamina Infinita\nElevador corrigido\nNoclip corrigido\nEN/PT-BR",
@@ -132,7 +134,7 @@ local T = {
         myllo_title = "mynameismyllo (Myllo)", myllo_desc = "Criador do Script do Toon Universe (Programador)",
         ali_title = "ali_hhjjj (Ali)", ali_desc = "Ajudante do Script do Toon Universe e Criador do Script do Dollys Factory",
         windui_title = "WindUI", windui_desc = "Biblioteca de UI por Footagesus",
-        discord_hint = "Em caso de questoes e bugs, entre no servidor do Ali e de ping no @mynameismyllo",
+        discord_hint = "Em caso de questoes e bugs, entre no The Toon Bunker e de ping no @mynameismyllo",
     },
 }
 
@@ -381,14 +383,13 @@ local function createWindow()
         flyConn = RunService.RenderStepped:Connect(function()
             if not flyActive or not root then return end
             flyBodyGyro.CFrame = cam.CFrame
+            local hum2 = char and char:FindFirstChildOfClass("Humanoid")
             local moveDir = Vector3.new(0, 0, 0)
-            local UIS = game:GetService("UserInputService")
-            if UIS:IsKeyDown(Enum.KeyCode.W) then moveDir = moveDir + cam.CFrame.LookVector end
-            if UIS:IsKeyDown(Enum.KeyCode.S) then moveDir = moveDir - cam.CFrame.LookVector end
-            if UIS:IsKeyDown(Enum.KeyCode.A) then moveDir = moveDir - cam.CFrame.RightVector end
-            if UIS:IsKeyDown(Enum.KeyCode.D) then moveDir = moveDir + cam.CFrame.RightVector end
-            if UIS:IsKeyDown(Enum.KeyCode.Space) then moveDir = moveDir + Vector3.new(0, 1, 0) end
-            if UIS:IsKeyDown(Enum.KeyCode.LeftShift) then moveDir = moveDir - Vector3.new(0, 1, 0) end
+            -- Mobile + PC: joystick moves along camera direction (including up/down)
+            if hum2 and hum2.MoveDirection.Magnitude > 0 then
+                moveDir = cam.CFrame.LookVector * hum2.MoveDirection.Z * -1
+                          + cam.CFrame.RightVector * hum2.MoveDirection.X
+            end
             flyBodyVel.Velocity = moveDir.Magnitude > 0 and moveDir.Unit * flySpeedValue or Vector3.new(0, 0, 0)
         end)
     end
@@ -956,6 +957,8 @@ local function createWindow()
     -- ============================================================
     -- CHANGELOG TAB
     -- ============================================================
+    addText(TabChangelog, tr("v103b_title"), tr("v103b_desc"))
+    TabChangelog:Space()
     addText(TabChangelog, tr("v103_title"), tr("v103_desc"))
     TabChangelog:Space()
     addText(TabChangelog, tr("v102_title"), tr("v102_desc"))
@@ -974,12 +977,12 @@ local function createWindow()
     addText(TabCredits, tr("ali_title"), tr("ali_desc"))
     TabCredits:Space()
     TabCredits:Button({
-        Title = "Ali's Discord Server",
-        Desc = "discord.gg/NKUefuSfqb",
+        Title = "The Toon Bunker",
+        Desc = "discord.gg/qQfhFCCndd",
         Icon = "message-circle",
         Justify = "Center",
         Callback = function()
-            setclipboard("https://discord.gg/NKUefuSfqb")
+            setclipboard("https://discord.gg/qQfhFCCndd")
             WindUI:Notify({
                 Title = "Discord",
                 Content = "Link copied to clipboard!",
@@ -993,7 +996,7 @@ local function createWindow()
     TabCredits:Space()
     addText(TabCredits, tr("windui_title"), tr("windui_desc"))
 
-    print("Toon Universe | v1.0.3 | " .. lang .. " | loaded!")
+    print("Toon Universe | v1.0.3Fix | " .. lang .. " | loaded!")
 end
 
 WindUI:Popup({
@@ -1008,7 +1011,7 @@ WindUI:Popup({
                 if not ok then warn("WindUI Error: " .. tostring(err)) end
                 WindUI:Notify({
                     Title = "Welcome!",
-                    Content = "Don't forget to join the Discord server in the Credits! The script has updated to v1.0.3, check the Changelog!",
+                    Content = "Don't forget to join the Discord server in the Credits! The script has updated to v1.0.3Fix, check the Changelog!",
                     Icon = "message-circle",
                     Duration = 6,
                 })
@@ -1022,7 +1025,7 @@ WindUI:Popup({
                 if not ok then warn("WindUI Error: " .. tostring(err)) end
                 WindUI:Notify({
                     Title = "Bem-vindo!",
-                    Content = "Nao esqueca de entrar no servidor do Discord nos Creditos! O script foi atualizado para v1.0.3, veja o Changelog!",
+                    Content = "Nao esqueca de entrar no servidor do Discord nos Creditos! O script foi atualizado para v1.0.3Fix, veja o Changelog!",
                     Icon = "message-circle",
                     Duration = 6,
                 })
