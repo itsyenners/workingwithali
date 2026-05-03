@@ -1,4 +1,4 @@
--- this is auto teleport to elevator
+--this is auto teleport to elevator
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
@@ -134,4 +134,4 @@ task.spawn(function()
         end
     end
 end)
--- end of auto teleport to elevator I'll fix auto skillcheck maybe
+--end of auto teleport to elevator I'll fix auto skillcheck maybe
